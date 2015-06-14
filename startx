@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export DISPLAY=:0.0
+xwin.exe -multiwindow -silent-dup-error -notrayicon >/dev/null 2>/dev/null &
