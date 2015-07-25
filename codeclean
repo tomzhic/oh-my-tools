@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rm -rf .cscope .cscope.in .cscope.po .ctags >/dev/null 2>/dev/null

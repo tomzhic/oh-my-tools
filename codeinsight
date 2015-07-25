@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ctags -R -f .ctags >/dev/null 2>/dev/null
+cscope_win -Rbq -f .cscope >/dev/null 2>/dev/null
