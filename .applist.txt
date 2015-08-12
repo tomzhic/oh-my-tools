@@ -16,6 +16,7 @@ xwin
 dos2unix
 tree
 procps
+psmisc
 tmux
 chere
 bison
