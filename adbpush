@@ -1,0 +1,18 @@
+#!/bin/sh
+
+show_useage()
+{
+	echo "useage:"
+	echo "    adbpush <local> <remote> - copy file/dir to device"
+}
+
+if [ $# != 2 ] ; then 
+	show_useage;
+	exit 1; 
+fi 
+
+WINDOWS_PATH=`cygpath -w $1`
+
+echo ""
+echo "adb push $WINDOWS_PATH $2"
+adb push $WINDOWS_PATH $2

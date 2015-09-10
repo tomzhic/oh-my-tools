@@ -1,0 +1,18 @@
+#!/bin/sh
+
+show_useage()
+{
+	echo "useage:"
+	echo "    adbpull <remote> <local> - copy file/dir from device"
+}
+
+if [ $# != 2 ] ; then 
+	show_useage;
+	exit 1; 
+fi 
+
+WINDOWS_PATH=`cygpath -w $2`\\.
+
+echo ""
+echo "adb pull $1 $WINDOWS_PATH"
+adb pull $1 $WINDOWS_PATH

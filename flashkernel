@@ -1,0 +1,13 @@
+#!/bin/sh
+
+#for android fastboot flash
+
+rm -rf tmp-dir
+mkdir tmp-dir
+
+scp root@linux:/work/t2/out/target/product/icesky_msm8992/boot.img tmp-dir/boot.img
+adb reboot bootloader
+sleep 3
+fastboot flash boot tmp-dir/boot.img
+fastboot reboot
+rm -rf tmp-dir
