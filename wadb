@@ -1,0 +1,75 @@
+#!/bin/sh
+
+show_useage()
+{
+	echo "Windows Android Debug Bridge for Cygwin"
+	echo ""
+	echo "useage:"
+	echo "    wadb flash <partition> <file>  - write a file to a flash partition"
+	echo "    wadb push  <local> <remote>    - copy file/dir to device"
+	echo "    wadb pull  <remote> <local>    - copy file/dir from device"
+	echo "    wadb shell                     - run remote shell interactively"
+	echo ""
+	echo "    all other useage is same as adb, \"adb help\" to show help message"
+}
+
+if [ $# = 0 ] ; then
+	show_useage;
+	exit 1;
+fi
+
+if [ "$1" == "flash" ] ; then
+	if [ $# != 3 ] ; then
+	show_useage;
+	exit 1;
+	fi
+	
+	WINDOWS_PATH=`cygpath -w $3`
+
+	echo ""
+	echo "fastboot flash $2 $WINDOWS_PATH"
+	fastboot flash $2 $WINDOWS_PATH
+	exit 0;
+fi
+
+if [ "$1" == "push" ] ; then
+	if [ $# != 3 ] ; then
+	show_useage;
+	exit 1;
+	fi
+
+	WINDOWS_PATH=`cygpath -w $2`
+
+	echo ""
+	echo "adb push $WINDOWS_PATH $3"
+	adb push $WINDOWS_PATH $3
+	exit 0;
+fi
+
+if [ "$1" == "push" ] ; then
+	if [ $# != 3 ] ; then
+	show_useage;
+	exit 1;
+	fi
+
+	WINDOWS_PATH=`cygpath -w $3`\\.
+
+	echo ""
+	echo "adb pull $2 $WINDOWS_PATH"
+	adb pull $2 $WINDOWS_PATH
+	exit 0;
+fi
+
+if [ "$1" == "shell" ] ; then
+	adbputty
+	exit 0;
+fi
+
+until [ -z $1 ] ; do
+	ADB_PARAM=`echo $ADB_PARAM $1`
+	shift
+done
+
+echo ""
+echo "adb $ADB_PARAM"
+adb $ADB_PARAM;

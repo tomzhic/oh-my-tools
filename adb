@@ -1,1 +1,1 @@
-/cygdrive/d/Win7/Green/Cmder/bin/adb.exe
+/cygdrive/d/Win7/Green/adbputty/app/adb.exe
