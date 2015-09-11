@@ -10,7 +10,8 @@ show_useage()
 	echo "    wadb pull  <remote> <local>    - copy file/dir from device"
 	echo "    wadb shell                     - run remote shell interactively"
 	echo ""
-	echo "    all other useage is same as adb, \"adb help\" to show help message"
+	echo "    all other useage is same as adb and fastboot"
+	echo "    \"adb help\" or \"fastboot help\" to show message"
 }
 
 #DEBUG=true
