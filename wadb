@@ -13,63 +13,115 @@ show_useage()
 	echo "    all other useage is same as adb, \"adb help\" to show help message"
 }
 
-if [ $# = 0 ] ; then
-	show_useage;
-	exit 1;
+DEBUG=true
+DEVICE_MODE=none
+
+if [ $# == 0 ] ; then
+	show_useage
+	exit 1
 fi
 
-if [ "$1" == "flash" ] ; then
-	if [ $# != 3 ] ; then
-	show_useage;
-	exit 1;
+adb devices -l | grep "product" > /dev/null
+if [ $? == 0 ] ; then
+	DEVICE_MODE=adb
+else
+	fastboot devices | grep "fastboot" > /dev/null
+	if [ $? == 0 ] ; then
+		DEVICE_MODE=fastboot
 	fi
-	
-	WINDOWS_PATH=`cygpath -w $3`
-
-	echo ""
-	echo "fastboot flash $2 $WINDOWS_PATH"
-	fastboot flash $2 $WINDOWS_PATH
-	exit 0;
 fi
 
-if [ "$1" == "push" ] ; then
-	if [ $# != 3 ] ; then
-	show_useage;
-	exit 1;
+if [ "$DEBUG" == "true" ] ; then
+	echo "DEVICE_MODE is $DEVICE_MODE"
+fi
+
+if [ "$DEVICE_MODE" == "adb" ] ; then
+
+	if [ "$1" == "push" ] ; then
+		if [ $# != 3 ] ; then
+			show_useage
+			exit 1
+		fi
+
+		WINDOWS_PATH=`cygpath -w $2`
+
+		if [ "$DEBUG" == "true" ] ; then
+			echo "command:"
+			echo "    adb push $WINDOWS_PATH $3"
+		fi
+
+		adb push $WINDOWS_PATH $3
+		exit 0
 	fi
 
-	WINDOWS_PATH=`cygpath -w $2`
+	if [ "$1" == "pull" ] ; then
+		if [ $# != 3 ] ; then
+			show_useage
+			exit 1
+		fi
 
-	echo ""
-	echo "adb push $WINDOWS_PATH $3"
-	adb push $WINDOWS_PATH $3
-	exit 0;
-fi
+		WINDOWS_PATH=`cygpath -w $3`\\.
 
-if [ "$1" == "push" ] ; then
-	if [ $# != 3 ] ; then
-	show_useage;
-	exit 1;
+		if [ "$DEBUG" == "true" ] ; then
+			echo "command:"
+			echo "    adb pull $2 $WINDOWS_PATH"
+		fi
+
+		adb pull $2 $WINDOWS_PATH
+		exit 0
 	fi
 
-	WINDOWS_PATH=`cygpath -w $3`\\.
+	if [ "$1" == "shell" ] ; then
+		if [ $# == 1 ] ; then
+				if [ "$DEBUG" == "true" ] ; then
+					echo "command:"
+					echo "    adbputty"
+				fi
+			adbputty
+			exit 0
+		fi
+	fi
 
-	echo ""
-	echo "adb pull $2 $WINDOWS_PATH"
-	adb pull $2 $WINDOWS_PATH
-	exit 0;
+	until [ -z $1 ] ; do
+		ADB_PARAM=`echo $ADB_PARAM $1`
+		shift
+	done
+
+	if [ "$DEBUG" == "true" ] ; then
+		echo "command:"
+		echo "    adb $ADB_PARAM"
+	fi
+
+	adb $ADB_PARAM;
+elif [ "$DEVICE_MODE" == "fastboot" ] ; then
+
+	if [ "$1" == "flash" ] ; then
+		if [ $# != 3 ] ; then
+			show_useage
+			exit 1
+		fi
+		
+		WINDOWS_PATH=`cygpath -w $3`
+
+		if [ "$DEBUG" == "true" ] ; then
+			echo "command:"
+			echo "    fastboot flash $2 $WINDOWS_PATH"
+		fi
+
+		fastboot flash $2 $WINDOWS_PATH
+		exit 0
+	fi
+
+	until [ -z $1 ] ; do
+		FASTBOOT_PARAM=`echo $FASTBOOT_PARAM $1`
+		shift
+	done
+
+	if [ "$DEBUG" == "true" ] ; then
+		echo "command:"
+		echo "    fastboot $FASTBOOT_PARAM"
+	fi
+	fastboot $FASTBOOT_PARAM;
+else
+	echo "wadb error: device not found"
 fi
-
-if [ "$1" == "shell" ] ; then
-	adbputty
-	exit 0;
-fi
-
-until [ -z $1 ] ; do
-	ADB_PARAM=`echo $ADB_PARAM $1`
-	shift
-done
-
-echo ""
-echo "adb $ADB_PARAM"
-adb $ADB_PARAM;

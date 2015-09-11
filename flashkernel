@@ -1,13 +1,10 @@
 #!/bin/sh
 
 #for android fastboot flash
+#base on wadb
 
-rm -rf tmp-dir
-mkdir tmp-dir
-
-scp root@linux:/work/t2/out/target/product/icesky_msm8992/boot.img tmp-dir/boot.img
-adb reboot bootloader
-sleep 3
-fastboot flash boot tmp-dir/boot.img
-fastboot reboot
-rm -rf tmp-dir
+wadb reboot bootloader
+scp root@linux:/work/t2/out/target/product/icesky_msm8992/boot.img /tmp/boot.img
+wadb flash boot /tmp/boot.img
+wadb reboot
+rm -rf /tmp/boot.img
