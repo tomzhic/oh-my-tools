@@ -17,6 +17,8 @@ show_useage()
 #DEBUG=true
 DEVICE_MODE=none
 
+export ADB_TRACE=0
+
 if [ $# == 0 ] ; then
 	show_useage
 	exit 1
@@ -68,7 +70,7 @@ if [ "$DEVICE_MODE" == "adb" ] ; then
 			echo "    adb pull $2 $WINDOWS_PATH"
 		fi
 
-		adb pull $2 $WINDOWS_PATH
+		adb pull -a $2 $WINDOWS_PATH
 		exit 0
 	fi
 
