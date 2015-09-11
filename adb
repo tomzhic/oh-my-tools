@@ -1,1 +1,1 @@
-/cygdrive/d/Win7/Green/adbputty/app/adb.exe
+/cygdrive/d/AdbPutty/app/adb.exe

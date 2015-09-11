@@ -13,7 +13,7 @@ show_useage()
 	echo "    all other useage is same as adb, \"adb help\" to show help message"
 }
 
-DEBUG=true
+#DEBUG=true
 DEVICE_MODE=none
 
 if [ $# == 0 ] ; then

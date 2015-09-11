@@ -4,4 +4,4 @@ Windows Registry Editor Version 5.00
 @="Terminal"
  
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Terminal\Command]
-@="D:\\Win7\\Green\\Cygwin\\bin\\mintty.exe"
+@="D:\\Cygwin\\bin\\mintty.exe"
