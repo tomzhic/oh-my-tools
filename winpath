@@ -1,0 +1,27 @@
+#!/usr/bin/gawk -f
+
+BEGIN{
+    DF = "df -P 2>/dev/null | sed '0,/^Filesystem/d'"
+    while ((DF | getline) > 0){
+        if ($(NF)=="/")
+            pathmap[$(NF)] = $1 "/"
+        else
+            pathmap[$(NF) "/"] = $1 "/"
+    }
+    close(DF)
+
+    matched_path = ""
+    input_path = ARGV[1]
+    if (input_path !~ /\/$/)
+        input_path = input_path "/"
+
+    for (pathitem in pathmap)
+        if ((input_path ~ "^" pathitem) && 
+                (length(pathitem)>length(matched_path)))
+            matched_path = pathitem
+    
+    sub("^" matched_path, pathmap[matched_path], input_path)
+    gsub("/", "\\", input_path)
+    sub(/\\$/, "", input_path)
+    print input_path
+}
