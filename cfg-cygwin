@@ -1,0 +1,90 @@
+#!/bin/sh
+
+#apt-cyg
+if [ ! -f /bin/apt-cyg ] ; then
+	echo "install apt-cyg"
+
+	APT_CYG="$(mktemp /tmp/apt-cyg.XXXXXXXX)"
+	wget --no-check-certificate "https://raw.githubusercontent.com/transcode-open/apt-cyg/master/apt-cyg" -O "${APT_CYG}"
+	chmod +x "${APT_CYG}"
+	install --backup "${APT_CYG}" /bin/apt-cyg
+fi
+
+# install some stuff like vim and git
+#"${APT_CYG}" install zsh mintty vim curl git openssh
+
+#zsh
+if [ ! -d ~/.oh-my-zsh ] ; then
+	echo "install oh-my-zsh"
+
+	sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+else
+	echo "update oh-my-zsh"
+
+	cd ~/.oh-my-zsh/
+	#git reset --hard > /dev/null
+	#git pull --rebase > /dev/null
+fi
+
+## Create initial /etc/zshenv
+#[[ ! -e /etc/zshenv ]] && echo export PATH=/usr/bin:\$PATH > /etc/zshenv
+#
+#install --backup ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+#
+## setting up zsh as default
+#sed -i "s/$USER\:\/bin\/bash/$USER\:\/bin\/zsh/g" /etc/passwd
+#
+## et voila just start it
+#/usr/bin/env zsh
+
+#vim
+if [ ! -d ~/.vim_runtime ] ; then
+	echo "install amix vimrc"
+
+	git clone https://github.com/amix/vimrc.git ~/.vim_runtime
+	sh ~/.vim_runtime/install_awesome_vimrc.sh
+else
+	echo "update amix vimrc"
+
+	cd ~/.vim_runtime/
+	#git reset --hard > /dev/null
+	#git pull --rebase > /dev/null
+fi
+
+#cygbin
+if [ ! -d /xbin ] ; then
+	echo "install cygbin"
+	
+	git clone https://github.com/kiddlu/cygbin.git /xbin
+else
+	echo "update cygbin"
+
+	cd /xbin
+	git status | grep "nothing to commit" > /dev/null
+	if [ $? != 0 ] ; then
+		git stash > /dev/null
+		git pull --rebase > /dev/null
+		git stash pop > /dev/null
+	else
+		git pull --rebase > /dev/null
+	fi
+fi
+
+#cygcfg
+if [ ! -d /xcfg ] ; then
+	echo "install cygcfg"
+
+	git clone https://github.com/kiddlu/cygcfg.git /xcfg
+else
+	echo "update cygcfg"
+
+	cd /xcfg
+	git status | grep "nothing to commit" > /dev/null
+	if [ $? != 0 ] ; then
+		git stash > /dev/null
+		git pull --rebase > /dev/null
+		git stash pop > /dev/null
+	else
+		git pull --rebase > /dev/null
+	fi
+fi
