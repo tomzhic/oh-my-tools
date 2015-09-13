@@ -8,6 +8,7 @@ curl
 dos2unix
 git
 gitk
+liberation-fonts
 mmv
 perl
 procps
