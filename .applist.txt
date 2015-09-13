@@ -13,6 +13,7 @@ perl
 procps
 psmisc
 python
+patch
 ruby
 shutdown
 sqlite3

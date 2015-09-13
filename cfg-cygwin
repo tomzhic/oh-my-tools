@@ -23,7 +23,7 @@ else
 
 	cd ~/.oh-my-zsh/
 	#git reset --hard > /dev/null
-	#git pull --rebase > /dev/null
+	git pull --rebase > /dev/null
 fi
 
 ## Create initial /etc/zshenv
@@ -48,7 +48,7 @@ else
 
 	cd ~/.vim_runtime/
 	#git reset --hard > /dev/null
-	#git pull --rebase > /dev/null
+	git pull --rebase > /dev/null
 fi
 
 #cygbin
