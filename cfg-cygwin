@@ -39,7 +39,7 @@ fi
 
 #vim
 if [ ! -d ~/.vim_runtime ] ; then
-	echo "install amix vimrc"
+	echo "install amix/vimrc"
 
 	git clone https://github.com/amix/vimrc.git ~/.vim_runtime
 	sh ~/.vim_runtime/install_awesome_vimrc.sh
@@ -75,6 +75,7 @@ if [ ! -d /xcfg ] ; then
 	echo "install cygcfg"
 
 	git clone https://github.com/kiddlu/cygcfg.git /xcfg
+	\\cp /xcfg/.* ~/ > /dev/null 2>&1
 else
 	echo "update cygcfg"
 
