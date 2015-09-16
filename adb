@@ -1,1 +1,1 @@
-/cygdrive/d/AdbPutty/app/adb.exe
+/cygdrive/d/Android/AdbPutty/app/adb.exe
