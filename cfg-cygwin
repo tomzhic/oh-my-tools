@@ -76,6 +76,7 @@ if [ ! -d /xcfg ] ; then
 
 	git clone https://github.com/kiddlu/cygcfg.git /xcfg
 	\\cp /xcfg/.* ~/ > /dev/null 2>&1
+	\\cp -rf /xcfg/.config/ ~/ > /dev/null 2>&1
 else
 	echo "update cygcfg"
 

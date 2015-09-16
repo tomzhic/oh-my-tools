@@ -8,6 +8,7 @@ show_useage()
 	echo "    wadb flash <partition> <file>  - write a file to a flash partition"
 	echo "    wadb push  <local> <remote>    - copy file/dir to device"
 	echo "    wadb pull  <remote> <local>    - copy file/dir from device"
+	echo "    wadb install <file>            - push file to the device and install it"
 	echo "    wadb shell                     - run remote shell interactively"
 	echo ""
 	echo "    all other useage is same as adb and fastboot"
@@ -71,6 +72,23 @@ if [ "$DEVICE_MODE" == "adb" ] ; then
 		fi
 
 		adb pull -a $2 $WINDOWS_PATH
+		exit 0
+	fi
+
+	if [ "$1" == "install" ] ; then
+		if [ $# != 2 ] ; then
+			show_useage
+			exit 1
+		fi
+
+		WINDOWS_PATH=`cygpath -w $2`
+
+		if [ "$DEBUG" == "true" ] ; then
+			echo "command:"
+			echo "    adb install $WINDOWS_PATH"
+		fi
+
+		adb install $WINDOWS_PATH
 		exit 0
 	fi
 
