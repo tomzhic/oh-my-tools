@@ -10,6 +10,7 @@ git
 gitk
 liberation-fonts
 mmv
+oxygen-fonts
 perl
 procps
 psmisc
