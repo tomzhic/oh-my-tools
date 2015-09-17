@@ -55,7 +55,7 @@ fi
 if [ ! -d /xbin ] ; then
 	echo "install cygbin"
 	
-	git clone git@github.com:kiddlu/cygbin.git /xbin
+	git clone https://github.com/kiddlu/cygbin.git /xbin
 else
 	echo "update cygbin"
 
@@ -74,7 +74,7 @@ fi
 if [ ! -d /xcfg ] ; then
 	echo "install cygcfg"
 
-	git clone git@github.com:kiddlu/cygcfg.git /xcfg
+	git clone https://github.com/kiddlu/cygcfg.git /xcfg
 	\\cp /xcfg/.* ~/ > /dev/null 2>&1
 	\\cp -rf /xcfg/.config/ ~/ > /dev/null 2>&1
 else
