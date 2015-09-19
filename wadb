@@ -92,6 +92,17 @@ if [ "$DEVICE_MODE" == "adb" ] ; then
 		exit 0
 	fi
 
+	if [ "$1" == "shell" ] ; then
+		if [ $# == 1 ] ; then
+				if [ "$DEBUG" == "true" ] ; then
+					echo "command:"
+					echo "    adbputty"
+				fi
+			adbputty
+			exit 0
+		fi
+	fi
+
 	until [ -z $1 ] ; do
 		ADB_PARAM=`echo $ADB_PARAM $1`
 		shift
@@ -102,7 +113,7 @@ if [ "$DEVICE_MODE" == "adb" ] ; then
 		echo "    adb $ADB_PARAM"
 	fi
 
-	adb $ADB_PARAM
+	adb $ADB_PARAM;
 elif [ "$DEVICE_MODE" == "fastboot" ] ; then
 
 	if [ "$1" == "flash" ] ; then
@@ -131,7 +142,7 @@ elif [ "$DEVICE_MODE" == "fastboot" ] ; then
 		echo "command:"
 		echo "    fastboot $FASTBOOT_PARAM"
 	fi
-	fastboot $FASTBOOT_PARAM
+	fastboot $FASTBOOT_PARAM;
 else
 	echo "wadb error: device not found"
 fi
