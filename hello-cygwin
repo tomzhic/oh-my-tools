@@ -51,25 +51,6 @@ else
 	git pull --rebase > /dev/null
 fi
 
-#hello cygwin
-if [ ! -d /xbin ] ; then
-	echo "install hello-cygwin"
-	
-	git clone https://github.com/kiddlu/hello-cygwin.git /xbin
-else
-	echo "update hello-cygwin"
-
-	cd /xbin
-	git status | grep "nothing to commit" > /dev/null
-	if [ $? != 0 ] ; then
-		git stash > /dev/null
-		git pull --rebase > /dev/null
-		git stash pop > /dev/null
-	else
-		git pull --rebase > /dev/null
-	fi
-fi
-
 #oh-my-config
 if [ ! -d /xcfg ] ; then
 	echo "install oh-my-config"
@@ -81,6 +62,25 @@ else
 	echo "update oh-my-config"
 
 	cd /xcfg
+	git status | grep "nothing to commit" > /dev/null
+	if [ $? != 0 ] ; then
+		git stash > /dev/null
+		git pull --rebase > /dev/null
+		git stash pop > /dev/null
+	else
+		git pull --rebase > /dev/null
+	fi
+fi
+
+#hello cygwin
+if [ ! -d /xbin ] ; then
+	echo "install hello-cygwin"
+	
+	git clone https://github.com/kiddlu/hello-cygwin.git /xbin
+else
+	echo "update hello-cygwin"
+
+	cd /xbin
 	git status | grep "nothing to commit" > /dev/null
 	if [ $? != 0 ] ; then
 		git stash > /dev/null
