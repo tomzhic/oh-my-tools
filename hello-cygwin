@@ -77,6 +77,7 @@ if [ ! -d /xbin ] ; then
 	echo "install hello-cygwin"
 	
 	git clone https://github.com/kiddlu/hello-cygwin.git /xbin
+	chmod +x /xbin/* 1> /dev/null 2> /dev/null
 else
 	echo "update hello-cygwin"
 
