@@ -52,6 +52,8 @@ set MIRROR=http://mirrors.163.com/cygwin
 ::                                   software packages during execution.
 
 
-%CYGWIN_ROOT%\%SETUP_ARCH% -q -g -s "%MIRROR%" -R "%CYGWIN_ROOT%" -P git -P wget -P curl -P vim -P zsh -P shutdown
+%CYGWIN_ROOT%\%SETUP_ARCH% -q -g -s "%MIRROR%" -R "%CYGWIN_ROOT%" -l "%CYGWIN_ROOT%\dist" -P git -P wget -P curl -P vim -P zsh -P gitk -P shutdown -P xorg-server -P oxygen-fonts
 
-%CYGWIN_ROOT%\bin\bash --login -i -c "wget --no-check-certificate https://raw.githubusercontent.com/kiddlu/cygbin/master/hello-cygwin -O - | sh"
+%CYGWIN_ROOT%\bin\bash --login -c "wget --no-check-certificate https://raw.githubusercontent.com/kiddlu/cygbin/master/hello-cygwin -O - | sh"
+
+%CYGWIN_ROOT%\bin\mintty -i /Cygwin-Terminal.ico -

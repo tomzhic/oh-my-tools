@@ -26,10 +26,6 @@ echo Writing data to %DIST_DIR%
 echo Downloading Cygwin %CYGWIN_VERSION%
 "%BASH%" -c "source ~/.bashrc; /bin/wget.exe --directory-prefix='%DIST_DIR%' https://cygwin.com/setup-x86_64.exe" || goto :ERROR
 
-:SETUPRC
-echo Preparing setup.rc config
-"%BASH%" -c "source ~/.bashrc; /bin/rm.exe -f /etc/setup/setup.rc" || goto :ERROR
-
 :RUNNINGCHECK
 "%BASH%" -c "source ~/.bashrc; /bin/ps.exe | /bin/grep.exe /usr/bin/mintty | /bin/wc.exe -l" > "%DIST_DIR%/running_count"
 set /p RUNNING_COUNT=<"%DIST_DIR%/running_count"	
@@ -50,7 +46,7 @@ GOTO CLEAN
 
 :CLEAN
 echo Clean dist files
-"%BASH%" -c "source ~/.bashrc; /bin/cp.exe -rf /dist/setup-x86_64.exe /xbin/setup.exe"
+"%BASH%" -c "source ~/.bashrc; /bin/cp.exe -rf /dist/setup-x86_64.exe /xbin/apt-cyg.exe"
 "%BASH%" -c "source ~/.bashrc; /bin/rm.exe -rf /dist"
 GOTO END
 
