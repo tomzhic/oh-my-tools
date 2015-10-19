@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cmder="/cygdrive/d/Cmder/Cmder.exe"
+winpath=$(pwd | xargs cygpath -w | tail)
+
+#echo "$cmder /START $winpath"
+$cmder /START $winpath
