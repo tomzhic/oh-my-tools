@@ -54,6 +54,8 @@ set MIRROR=http://mirrors.163.com/cygwin
 
 %CYGWIN_ROOT%\%SETUP_ARCH% -q -g -s "%MIRROR%" -R "%CYGWIN_ROOT%" -l "%CYGWIN_ROOT%\dist" -P git -P wget -P curl -P vim -P zsh -P gitk -P shutdown -P xorg-server -P oxygen-fonts
 
+%CYGWIN_ROOT%\bin\bash --login -c --login -c "wget.exe -N --directory-prefix=/dist/ https://cygwin.com/setup-x86_64.exe"
+
 %CYGWIN_ROOT%\bin\bash --login -c "wget --no-check-certificate https://raw.githubusercontent.com/kiddlu/cygbin/master/hello-cygwin -O - | sh"
 
 %CYGWIN_ROOT%\bin\mintty -i /Cygwin-Terminal.ico -

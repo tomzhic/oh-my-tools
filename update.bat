@@ -24,10 +24,10 @@ echo Upgrading Cygwin from %MIRROR%
 echo Writing data to %DIST_DIR%
 
 echo Downloading Cygwin %CYGWIN_VERSION%
-"%BASH%" -c "source ~/.bashrc; /bin/wget.exe --directory-prefix='%DIST_DIR%' https://cygwin.com/setup-x86_64.exe" || goto :ERROR
+"%BASH%" --login -c "source ~/.bashrc; /bin/wget.exe -N --directory-prefix='%DIST_DIR%' https://cygwin.com/setup-x86_64.exe" || goto :ERROR
 
 :RUNNINGCHECK
-"%BASH%" -c "source ~/.bashrc; /bin/ps.exe | /bin/grep.exe /usr/bin/mintty | /bin/wc.exe -l" > "%DIST_DIR%/running_count"
+"%BASH%" --login -c "source ~/.bashrc; /bin/ps.exe | /bin/grep.exe /usr/bin/mintty | /bin/wc.exe -l" > "%DIST_DIR%/running_count"
 set /p RUNNING_COUNT=<"%DIST_DIR%/running_count"	
 
 if NOT "%RUNNING_COUNT%"=="0" (
@@ -35,19 +35,18 @@ if NOT "%RUNNING_COUNT%"=="0" (
 	GOTO CYGWINRUNNING
 )
 
-"%BASH%" -c "source ~/.bashrc; /bin/rm.exe -f /etc/setup/setup.rc;" || goto :ERROR
-
 :DIRECTDOWNLOAD
 cd %DIST_DIR%
-"%BASH%" -c "source ~/.bashrc; /bin/cygpath.exe -w /" > "%DIST_DIR%/root_path"
+"%BASH%" --login -c "source ~/.bashrc; /bin/cygpath.exe -w /" > "%DIST_DIR%/root_path"
 set /p ROOT_PATH=<"%DIST_DIR%/root_path"
 %DIST_DIR%\setup-x86_64.exe --quiet-mode --upgrade-also --site="%MIRROR%" --no-admin --no-shortcuts --no-startmenu --no-desktop --root="%ROOT_PATH%" --local-package-dir="%DIST_DIR%" || goto :ERROR
 GOTO CLEAN
 
 :CLEAN
 echo Clean dist files
-"%BASH%" -c "source ~/.bashrc; /bin/cp.exe -rf /dist/setup-x86_64.exe /xbin/apt-cyg.exe"
-"%BASH%" -c "source ~/.bashrc; /bin/rm.exe -rf /dist"
+"%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/http*"
+"%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/root_path"
+"%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/running_count"
 GOTO END
 
 :NOTFOUND
@@ -68,4 +67,5 @@ EXIT /b %errorlevel%
 
 :END
 ECHO Full success - starting cygwin
-start "" "%CYGWIN_HOME%\bin\mintty.exe" - || goto :ERROR
+pause
+::start "" "%CYGWIN_HOME%\bin\mintty.exe" - || goto :ERROR
