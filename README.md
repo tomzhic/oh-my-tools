@@ -1,8 +1,11 @@
-# Hello Cygwin
-This is for my own Cygwin tools & env
+# How to Setup
 
-# Setup
+----------
 
-Install [cygwin](http://www.cygwin.com/) with "wget curl git zsh vim" then start cygwin and run 
+#### 1. download [hello-cygwin](https://github.com/kiddlu/hello-cygwin/releases/download/2.872/hello-cygwin.zip) ####
 
-    wget --no-check-certificate https://raw.githubusercontent.com/kiddlu/cygbin/master/hello-cygwin -O - | sh
+#### 2. unzip to path you want to install [ex. D:\Cygwin\] ####
+
+#### 3. exec install.bat ####
+
+#### 4. enjoy! ####
