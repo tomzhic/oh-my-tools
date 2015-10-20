@@ -2,10 +2,10 @@
 ::setlocal enableextensions enabledelayedexpansion
 
 :BEGIN
-set CYGWIN_HOME=%~dp0\..
-set DIST_DIR=%CYGWIN_HOME%\dist
-set WGET=%CYGWIN_HOME%\bin\wget.exe
-set BASH=%CYGWIN_HOME%\bin\bash.exe
+set CYGWIN_ROOT=%~dp0\..
+set DIST_DIR=%CYGWIN_ROOT%\dist
+set WGET=%CYGWIN_ROOT%\bin\wget.exe
+set BASH=%CYGWIN_ROOT%\bin\bash.exe
 
 if not exist "%WGET%" goto NOTFOUND
 
@@ -39,7 +39,7 @@ if NOT "%RUNNING_COUNT%"=="0" (
 cd %DIST_DIR%
 "%BASH%" --login -c "source ~/.bashrc; /bin/cygpath.exe -w /" > "%DIST_DIR%/root_path"
 set /p ROOT_PATH=<"%DIST_DIR%/root_path"
-%DIST_DIR%\setup-x86_64.exe --quiet-mode --upgrade-also --site="%MIRROR%" --no-admin --no-shortcuts --no-startmenu --no-desktop --root="%ROOT_PATH%" --local-package-dir="%DIST_DIR%" || goto :ERROR
+%CYGWIN_ROOT%\setup-x86_64.exe --quiet-mode --upgrade-also --site="%MIRROR%" --no-admin --no-shortcuts --no-startmenu --no-desktop --root="%ROOT_PATH%" --local-package-dir="%DIST_DIR%" || goto :ERROR
 GOTO CLEAN
 
 :CLEAN
@@ -68,4 +68,4 @@ EXIT /b %errorlevel%
 :END
 ECHO Full success - starting cygwin
 pause
-::start "" "%CYGWIN_HOME%\bin\mintty.exe" - || goto :ERROR
+::start "" "%CYGWIN_ROOT%\bin\mintty.exe" - || goto :ERROR
