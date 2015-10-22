@@ -39,7 +39,7 @@ if NOT "%RUNNING_COUNT%"=="0" (
 cd %DIST_DIR%
 "%BASH%" --login -c "source ~/.bashrc; /bin/cygpath.exe -w /" > "%DIST_DIR%/root_path"
 set /p ROOT_PATH=<"%DIST_DIR%/root_path"
-%CYGWIN_ROOT%\setup-x86_64.exe --quiet-mode --upgrade-also --site="%MIRROR%" --no-admin --no-shortcuts --no-startmenu --no-desktop --root="%ROOT_PATH%" --local-package-dir="%DIST_DIR%" || goto :ERROR
+%DIST_DIR%\setup-x86_64.exe --quiet-mode --upgrade-also --site="%MIRROR%" --no-admin --no-shortcuts --no-startmenu --no-desktop --root="%ROOT_PATH%" --local-package-dir="%DIST_DIR%" || goto :ERROR
 GOTO CLEAN
 
 :CLEAN
@@ -47,6 +47,7 @@ echo Clean dist files
 "%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/http*"
 "%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/root_path"
 "%BASH%" --login -c "source ~/.bashrc; /bin/rm.exe -rf /dist/running_count"
+"%BASH%" --login -c "source ~/.bashrc; /bin/cp.exe -pf /dist/setup-x86_64.exe /"
 GOTO END
 
 :NOTFOUND
