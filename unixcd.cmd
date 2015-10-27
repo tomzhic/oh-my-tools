@@ -9,7 +9,7 @@ if '%1'=='-' (
 ) else if '%1'=='/' (
     cd /d %CYGWIN_ROOT%
 	if not errorlevel 1 set OLDPWD=%cd%
-) else if '%1'=='#' (
+) else if '%1'=='@' (
     cd /d %USERPROFILE%
 	if not errorlevel 1 set OLDPWD=%cd%
 ) else (
