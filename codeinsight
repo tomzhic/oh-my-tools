@@ -1,4 +1,0 @@
-#!/bin/sh
-
-ctags -R -f .ctags >/dev/null 2>/dev/null
-/xbin/cscope -Rbq -f .cscope >/dev/null 2>/dev/null
