@@ -52,7 +52,7 @@ set MIRROR=http://mirrors.163.com/cygwin
 ::                                   software packages during execution.
 
 
-%CYGWIN_ROOT%\%SETUP_ARCH% -q -g -s "%MIRROR%" -R "%CYGWIN_ROOT%" -l "%CYGWIN_ROOT%\dist" -P git -P wget -P curl -P vim -P zsh -P gitk -P shutdown -P xorg-server -P oxygen-fonts -P dos2unix -P ctags -P procps -P psmisc -P patch -P sqlite3 -P tmux -P tree -P iperf
+%CYGWIN_ROOT%\%SETUP_ARCH% -q -g -s "%MIRROR%" -R "%CYGWIN_ROOT%" -l "%CYGWIN_ROOT%\dist" -P git -P wget -P curl -P vim -P zsh -P gitk -P shutdown -P xorg-server -P oxygen-fonts -P dos2unix -P procps -P psmisc -P patch -P sqlite3 -P tmux -P tree -P iperf
 
 rem oh-my-zsh
 %CYGWIN_ROOT%\bin\bash -l -c "wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh"
@@ -65,6 +65,7 @@ rem oh-my-config
 %CYGWIN_ROOT%\bin\bash -l -c "git clone https://github.com/kiddlu/oh-my-config.git /xcfg"
 %CYGWIN_ROOT%\bin\bash -l -c "\\cp /xcfg/.* ~/ > /dev/null 2>&1"
 %CYGWIN_ROOT%\bin\bash -l -c "\\cp -rf /xcfg/.config/ ~/ > /dev/null 2>&1"
+%CYGWIN_ROOT%\bin\bash -l -c "rm -rf /xcfg"
 
 rem hello-cygwin
 %CYGWIN_ROOT%\bin\bash -l -c "git clone https://github.com/kiddlu/hello-cygwin.git /xbin"
