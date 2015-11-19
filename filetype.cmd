@@ -1,4 +1,4 @@
-@echo on
+@echo off
 set CYGWIN_ROOT=%~dp0..
 
 rem bash
