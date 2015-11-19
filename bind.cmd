@@ -1,7 +1,8 @@
 @echo off
-set CYGWIN_ROOT=%~dp0..
+rem bind .file with app
 
 rem bash
+set CYGWIN_ROOT=%~dp0..
 assoc .sh=Shell.File
 ftype Shell.File="%CYGWIN_ROOT%\bin\bash.exe" "%%1" %%*
 reg add "HKEY_CLASSES_ROOT\Shell.File\DefaultIcon" /ve /t REG_SZ /d "%CYGWIN_ROOT%\Cygwin-Terminal.ico,0" /f >nul
