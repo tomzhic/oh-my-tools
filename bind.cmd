@@ -12,8 +12,11 @@ assoc .py=Python.File
 ftype Python.File="D:\Python\python.exe" "%%1" %%*
 
 rem office
-rem assoc .doc=Office.File
-rem assoc .ppt=Office.File
-rem assoc .=Office.File
-rem assoc .=Office.File
-rem assoc .=Office.File
+assoc .doc=Office.File
+assoc .docx=Office.File
+assoc .xls=Office.File
+assoc .xlsx=Office.File
+assoc .ppt=Office.File
+assoc .pptx=Office.File
+ftype Office.File="D:\PortableApps\LibreOfficePortable\LibreOfficePortable.exe" "%%1" 
+reg add "HKEY_CLASSES_ROOT\Offile.File\DefaultIcon" /ve /t REG_SZ /d "D:\PortableApps\LibreOfficePortable\App\AppInfo\appicon.ico" /f >nul
