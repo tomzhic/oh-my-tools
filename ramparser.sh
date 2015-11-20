@@ -1,4 +1,5 @@
 #!/bin/sh
+source /xbin/bashenv.sh
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
 ramparse_path=/cygdrive/d/Android/ramparser/
