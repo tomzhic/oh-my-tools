@@ -5,6 +5,7 @@ rem The unixcd support:
 rem cd - : go back to last dir
 rem cd / : go to cygwin root dir
 rem cd ~ : go to cygwin user home dir
+rem cd ! : go to windows user desktop dir
 rem cd @ : go to windows user profile dir
 
 if '%*'=='' cd & exit /b
@@ -16,6 +17,9 @@ if '%1'=='-' (
 	if not errorlevel 1 set OLDPWD=%cd%
 ) else if '%1'=='~' (
     cd /d %HOME%
+	if not errorlevel 1 set OLDPWD=%cd%
+) else if '%1'=='!' (
+    cd /d %USERPROFILE%\Desktop
 	if not errorlevel 1 set OLDPWD=%cd%
 ) else if '%1'=='@' (
     cd /d %USERPROFILE%
