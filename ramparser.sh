@@ -25,5 +25,5 @@ python $ramparse_path/ramparse.py \
 	-x --64-bit --force-hardware 8992
 
 #tz
-python $base_path/vendor/msm8992/tz_diag_parser.py OCIMEM.BIN DDRCS0_0.BIN > ./ap-log/tz_log.txt
+python $ramparse_path/vendor/msm8992/tz_diag_parser.py OCIMEM.BIN DDRCS0_0.BIN > ./ap-log/tz_log.txt
 echo "msm8992 ram parser AP done"
