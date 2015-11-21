@@ -8,8 +8,8 @@ echo ""
 echo "This is shell script $@ on"
 bash --version | grep bash
 
-cmd_file="/tmp/cmd_tmp_$$.cmd"
-py_file="/tmp/py_tmp_$$.py"
+cmd_file=`mktemp --suffix=.cmd`
+py_file=`mktemp --suffix=.py`
 trap "rm -f $cmd_file $py_file" EXIT
 
 #cmd
