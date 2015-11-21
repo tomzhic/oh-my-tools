@@ -1,6 +1,7 @@
 @echo off
 
 set CMDER_HOME=D:\Cmder
-set CMDER=%CMDER_HOME%\Cmder.exe
+set CMDER_INIT=%CMDER_HOME%\Cmder.init.bat
+set CMDER_START=%cd%
 
-start %CMDER% "%cd%"
+cmd /k %CMDER_INIT%
