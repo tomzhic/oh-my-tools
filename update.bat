@@ -2,7 +2,7 @@
 ::setlocal enableextensions enabledelayedexpansion
 
 :BEGIN
-set CYGWIN_ROOT=%~dp0\..
+set CYGWIN_ROOT=%WINIX_ROOT%\Cygwin
 set DIST_DIR=%CYGWIN_ROOT%\dist
 set WGET=%CYGWIN_ROOT%\bin\wget.exe
 set BASH=%CYGWIN_ROOT%\bin\bash.exe
