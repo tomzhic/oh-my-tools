@@ -10,7 +10,8 @@ bash --version | grep bash
 
 cmd_file=`mktemp --suffix=.cmd`
 py_file=`mktemp --suffix=.py`
-trap "rm -f $cmd_file $py_file" EXIT
+pl_file=`mktemp --suffix=.pl`
+trap "rm -f $cmd_file $py_file $pl_file" EXIT
 
 #cmd
 cat <<'CMDEND' > $cmd_file
@@ -20,11 +21,11 @@ echo This is windows cmd %* on
 echo %OS%
 CMDEND
 
-$cmd_file $@
+cmd /c `cygpath -w $cmd_file` $@
 
 #python
 cat <<'PYEND' > $py_file
-#/bin/python
+#/usr/bin/python
 
 import sys
 print 
@@ -33,3 +34,14 @@ print sys.platform
 PYEND
 
 python $py_file $@
+
+#perl
+cat <<'PLEND' > $pl_file
+#/usr/bin/perl
+
+print "\n";
+print "This is perl script $ARGV on\n";
+print "version $] $^O\n";
+PLEND
+
+perl $pl_file $@

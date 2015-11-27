@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sh
 source ~/.winshrc
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
