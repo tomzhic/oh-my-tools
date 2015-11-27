@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-source ~/.winshrc
+source ~/.winixrc
 
 UBUNTU_IP=192.168.1.14
 ROUTER_IP=192.168.1.1

@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/.winshrc
+source ~/.winixrc
 
 # This script shows how to create and exe
 # cmd/py/awk/other dynamic language script in shell

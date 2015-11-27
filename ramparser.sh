@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-source ~/.winshrc
+source ~/.winixrc
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
 ramparse_path=/cygdrive/d/Android/ramparser/
