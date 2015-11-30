@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 source ~/.winixrc
 
 UBUNTU_IP=192.168.1.14

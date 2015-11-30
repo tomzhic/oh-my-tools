@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/use/bin/env bash
 source ~/.winixrc
 
 # This script shows how to create and exe
@@ -25,7 +25,7 @@ cmd /c `cygpath -w $cmd_file` $@
 
 #python
 cat <<'PYEND' > $py_file
-#/usr/bin/python
+#/usr/bin/env python
 
 import sys
 print 
@@ -37,7 +37,7 @@ python $py_file $@
 
 #perl
 cat <<'PLEND' > $pl_file
-#/usr/bin/perl
+#/usr/bin/env perl
 
 print "\n";
 print "This is perl script $ARGV on\n";

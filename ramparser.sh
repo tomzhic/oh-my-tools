@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 source ~/.winixrc
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
