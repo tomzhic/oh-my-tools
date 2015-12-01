@@ -29,14 +29,18 @@ python $ramparse_path/ramparse.py \
 	--phys-offset 0x00000000 \
 	--outdir ./ap-log \
 	--ram-file ./OCIMEM.BIN 0xFE800000 0xFE80FFFF \
-	--ram-file ./DDRCS0_0.BIN 0x00000000 0x2FFFFFFF \
-	--ram-file ./DDRCS0_1.BIN 0x80000000 0xAFFFFFFF \
-	--ram-file ./DDRCS1_0.BIN 0x30000000 0x5FFFFFFF \
-	--ram-file ./DDRCS1_1.BIN 0xB0000000 0xDFFFFFFF
+	--ram-file ./DDRCS0_0.BIN 0x00000000 0x3FFFFFFF \
+	--ram-file ./DDRCS0_1.BIN 0x40000000 0x7FFFFFFF
+# 3g	--ram-file ./DDRCS0_0.BIN 0x00000000 0x2FFFFFFF \
+# 3g	--ram-file ./DDRCS0_1.BIN 0x80000000 0xAFFFFFFF \
+# 3g	--ram-file ./DDRCS1_0.BIN 0x30000000 0x5FFFFFFF \
+# 3g	--ram-file ./DDRCS1_1.BIN 0xB0000000 0xDFFFFFFF
 # 2g	--ram-file ./DDRCS0_0.BIN 0x00000000 0x1FFFFFFF \
 # 2g	--ram-file ./DDRCS0_1.BIN 0x40000000 0x5FFFFFFF \
 # 2g	--ram-file ./DDRCS1_0.BIN 0x20000000 0x3FFFFFFF \
 # 2g	--ram-file ./DDRCS1_1.BIN 0x60000000 0x7FFFFFFF
+# 2gB	--ram-file ./DDRCS0_0.BIN 0x00000000 0x3FFFFFFF \
+# 2gB	--ram-file ./DDRCS0_1.BIN 0x40000000 0x7FFFFFFF
 
 #tz
 python $ramparse_path/vendor/msm8992/tz_diag_parser.py OCIMEM.BIN DDRCS0_0.BIN > ./ap-log/tz_log.txt
