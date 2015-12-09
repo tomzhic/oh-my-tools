@@ -2,7 +2,7 @@
 source ~/.winixrc
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
-ramparse_path=/cygdrive/d/Android/ramparser/
+ramparse_path=/winix/Android/ramparser/
 ndk_path=/cygdrive/d/Android/ndk/android-ndk-r10e/
 
 if [ ! -e vmlinux ]
