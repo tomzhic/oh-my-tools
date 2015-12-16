@@ -1,5 +1,3 @@
 @echo off
 
-set CMDER=%WINIXROOT%\Cmder\Cmder.exe
-
-start %CMDER% "%cd%"
+start %WINIXROOT%\Cmder\Cmder.exe "%cd%"
