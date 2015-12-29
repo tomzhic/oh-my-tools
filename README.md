@@ -1,11 +1,7 @@
-# How to Setup
+# How to Use??
 
 ----------
 
-#### 1. download [hello-cygwin](https://github.com/kiddlu/hello-cygwin/releases/download/2.872/hello-cygwin.zip) ####
+#### Install [Winix](https://github.com/kiddlu/Winix), this project will be installed by default ####
 
-#### 2. unzip to path you want to install [ex. D:\Cygwin\] ####
-
-#### 3. exec install.bat ####
-
-#### 4. enjoy! ####
+#### Enjoy! ####
