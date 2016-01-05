@@ -27,7 +27,11 @@ case $1 in
 --version) exec echo "$version";;
 esac
 
+<<<<<<< 625a6f947fae604e1bf3aaf79dd1ebe52247e020
 INPUT_FILE=`realpath $1`
+=======
+INPUT_FILE=`readlink -f $1`
+>>>>>>> udpate
 
 if [ ! -f "$INPUT_FILE" ]; then 
   echo -e "\033[31mErr: $1 does not exist\033[0m"
