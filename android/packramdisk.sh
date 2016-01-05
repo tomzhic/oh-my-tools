@@ -46,4 +46,3 @@ echo "pack ramdisk to $OUTPUT"
 
 #exec mkbootfs "$INPUT" | minigzip > $OUTPUT
 cd `readlink -f $INPUT`;find . | cpio -o -H newc | gzip > $OUTPUT
->>>>>>> udpate
