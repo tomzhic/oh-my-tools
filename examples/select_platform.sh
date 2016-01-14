@@ -12,6 +12,8 @@ esac
 if [ -z "$SYS" ]; then
     echo "System not found"
     exit 1;
+else
+	echo "System is $SYS"
 fi
 
-ln -sf Makefile.$SYS Makefile.opts
+#ln -sf Makefile.$SYS Makefile.opts
