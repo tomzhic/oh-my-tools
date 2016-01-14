@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 source ~/.winixrc
 
 if [ ! -f "$1" ]; then 
