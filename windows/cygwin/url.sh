@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 source ~/.winixrc
 
 URL_PATH=$1
