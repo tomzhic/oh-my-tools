@@ -18,6 +18,8 @@
 
 ####[Swiss File Knife](http://stahlworks.com/dev/swiss-file-knife.html)
 
+####[busybox](http://frippery.org/busybox/index.html)
+
 ####[f2ko CMD Tools](http://www.f2ko.de/en/cmd.php)
 
 ####[cmd-tools](http://www.cmd-tools.com/)
