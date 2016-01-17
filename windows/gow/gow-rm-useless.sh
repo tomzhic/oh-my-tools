@@ -31,7 +31,14 @@ else
 fi
 
 if [ "$SYS" == "cygwin" ]; then
-	for cmd in `./busybox.exe --list`; do
-		/usr/bin/rm -f bb-$cmd.bat;
+	for useless in `/usr/bin/ls.exe -w 1 *.bat`; do	
+		echo "rm -f $useless"
+		/usr/bin/rm -f $useless
 	done
+	for useless in `/usr/bin/ls.exe -w 1 msys-*`; do	
+		echo "rm -f $useless"
+		/usr/bin/rm -f $useless
+	done
+	echo "rm -f gow.vbs vim.exe bash.exe putty.exe nano.exe ncftp.exe"
+	/usr/bin/rm -f gow.vbs vim.exe bash.exe putty.exe nano.exe ncftp.exe
 fi

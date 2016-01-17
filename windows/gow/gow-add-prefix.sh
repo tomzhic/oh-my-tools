@@ -31,7 +31,8 @@ else
 fi
 
 if [ "$SYS" == "cygwin" ]; then
-	for cmd in `./busybox.exe --list`; do
-		/usr/bin/rm -f bb-$cmd.bat;
+	for cmd in `/usr/bin/ls.exe -w 1 *.exe`; do	
+		echo "mv $cmd gow-$cmd"
+		/usr/bin/mv $cmd gow-$cmd
 	done
 fi
