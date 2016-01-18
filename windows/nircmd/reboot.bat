@@ -1,0 +1,1 @@
+@%~dp0\nircmd.exe exitwin reboot 
