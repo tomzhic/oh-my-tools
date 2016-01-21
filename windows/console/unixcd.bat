@@ -7,6 +7,8 @@ rem cd / : go to cygwin root dir
 rem cd ~ : go to cygwin user home dir
 rem cd ! : go to windows user desktop dir
 rem cd @ : go to windows user profile dir
+rem cd # : go to winix root dir
+rem cd $ : go to repo root dir
 
 if '%*'=='' cd & exit /b
 if '%1'=='-' (
@@ -26,6 +28,9 @@ if '%1'=='-' (
 	if not errorlevel 1 set OLDPWD=%cd%
 ) else if '%1'=='#' (
     cd /d %WINIXROOT%
+	if not errorlevel 1 set OLDPWD=%cd%
+) else if '%1'=='$' (
+    cd /d %REPOROOT%
 	if not errorlevel 1 set OLDPWD=%cd%
 ) else (
     cd /d %*
