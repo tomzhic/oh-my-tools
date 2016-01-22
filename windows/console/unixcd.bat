@@ -1,16 +1,6 @@
-@echo off  
-rem This is the unix like cd command which use in windows cmd/cmder
+@echo off
 
-rem The unixcd support:
-rem cd - : go back to last dir
-rem cd / : go to cygwin root dir
-rem cd ~ : go to cygwin user home dir
-rem cd ! : go to windows user desktop dir
-rem cd @ : go to windows user profile dir
-rem cd # : go to winix root dir
-rem cd $ : go to repo root dir
-
-if '%*'=='' cd & exit /b
+if '%*'=='' call :help & exit /b
 if '%1'=='-' (
     cd /d %OLDPWD%
     set OLDPWD=%cd%
@@ -36,3 +26,14 @@ if '%1'=='-' (
     cd /d %*
     if not errorlevel 1 set OLDPWD=%cd%
 )
+
+:help
+echo This is the unix like cd command which used in windows cmd
+echo.
+echo cd - : last dir
+echo cd / : cygwin root dir
+echo cd ~ : cygwin user home dir
+echo cd ! : windows user desktop dir
+echo cd @ : windows user profile dir
+echo cd # : winix root dir
+echo cd $ : repo root dir
