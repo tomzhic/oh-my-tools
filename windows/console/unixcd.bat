@@ -26,6 +26,7 @@ if '%1'=='-' (
     cd /d %*
     if not errorlevel 1 set OLDPWD=%cd%
 )
+exit /b
 
 :help
 echo This is the unix like cd command which used in windows cmd
