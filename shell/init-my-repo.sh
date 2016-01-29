@@ -23,7 +23,7 @@ else
 	setx REPOROOT `bb-pwd.bat` /M
 fi
 
-git clone https://github.com/kiddlu/Ubunix.git
+git clone https://github.com/kiddlu/Ubuntu.git
 git clone https://github.com/kiddlu/Winix.git
 
 git clone https://github.com/kiddlu/hello-windows.git
