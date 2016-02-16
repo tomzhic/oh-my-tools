@@ -8,4 +8,6 @@ if '%1'=='c' (
 	ftype Python.File="C:\Python2\python.exe" "%%1" %%*
 ) else (
 	echo use w/c to switch Win32-Python / Cygwin-Python
+	assoc .py
+	ftype Python.File
 )
