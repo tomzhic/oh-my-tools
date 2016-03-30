@@ -10,7 +10,8 @@ case `uname` in
 esac
 
 if [ "$SYS" == "cygwin" ]; then
-	source ~/.winixrc    
+	source ~/.winixrc
+	setx REPOROOT `bb-pwd.bat` /M    
 fi
 
 git st . 2>&1  | grep "Not a git repository" > /dev/null
@@ -20,7 +21,6 @@ if [ $? != 0 ]; then
 	exit 1
 else
 	echo "start init my repo"
-	setx REPOROOT `bb-pwd.bat` /M
 fi
 
 git clone https://github.com/kiddlu/Ubuntu.git
@@ -33,7 +33,8 @@ git clone https://github.com/kiddlu/hello-sourceinsight.git
 
 git clone https://github.com/kiddlu/adbputty.git
 git clone https://github.com/kiddlu/ramparser.git
-git clone https://github.com/kiddlu/android-host-tools-standalone.git
+git clone https://github.com/kiddlu/android-host-knife.git
+git clone https://github.com/kiddlu/android-target-bsp.git
 
 git clone https://github.com/kiddlu/oh-my-examples.git
 git clone https://github.com/kiddlu/oh-my-tools.git

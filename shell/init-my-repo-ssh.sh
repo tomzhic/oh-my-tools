@@ -33,7 +33,8 @@ git clone git@github.com:kiddlu/hello-sourceinsight.git
 
 git clone git@github.com:kiddlu/adbputty.git
 git clone git@github.com:kiddlu/ramparser.git
-git clone git@github.com:kiddlu/android-host-tools-standalone.git
+git clone git@github.com:kiddlu/android-host-knife.git
+git clone git@github.com:kiddlu/android-target-bsp.git
 
 git clone git@github.com:kiddlu/oh-my-examples.git
 git clone git@github.com:kiddlu/oh-my-tools.git
