@@ -1,4 +1,4 @@
-# Copyright (c) 2013, The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -9,6 +9,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+import ctypes
+
 
 def bm(msb, lsb):
     'Creates a bitmask from msb to lsb'
@@ -18,3 +20,17 @@ def bm(msb, lsb):
 def bvalsel(msb, lsb, val):
     'Masks and returns the bits from msb to lsb in val'
     return ((val & bm(msb, lsb)) >> lsb)
+
+
+def is_set(val, bit):
+    'Checks whether particular bit is set in val'
+    if (val >> bit) & 0x1:
+        return True
+    return False
+
+
+def align(x, a):
+    """Round x up to the nearest multiple of a"""
+    # See include/uapi/linux/kernel.h
+    notmask = ctypes.c_uint64(~(a - 1)).value
+    return (x + a - 1) & notmask

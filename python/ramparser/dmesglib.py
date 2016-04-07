@@ -1,4 +1,4 @@
-# Copyright (c) 2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -50,7 +50,7 @@ class DmesgLib(object):
 
     def verify_log_helper(self, msg, verbose):
         # return early if CONFIG_LOG_BUF_MAGIC is not defined
-        log_align_addr = self.ramdump.addr_lookup('__log_align')
+        log_align_addr = self.ramdump.address_of('__log_align')
         if (log_align_addr is None):
             return True
 
@@ -101,15 +101,16 @@ class DmesgLib(object):
         return logbuf_addr + last_idx
 
     def extract_dmesg_flat(self):
-        addr = self.ramdump.read_word(self.ramdump.addr_lookup('log_buf'))
-        size = self.ramdump.read_word(self.ramdump.addr_lookup('log_buf_len'))
+        addr = self.ramdump.read_word(self.ramdump.address_of('log_buf'))
+        size = self.ramdump.read_word(self.ramdump.address_of('log_buf_len'))
         dmesg = self.ramdump.read_physical(self.ramdump.virt_to_phys(addr), size)
         self.outfile.write(cleanupString(dmesg.decode('ascii', 'ignore')) + '\n')
 
     def extract_dmesg_binary(self):
-        first_idx_addr = self.ramdump.addr_lookup('log_first_idx')
-        last_idx_addr = self.ramdump.addr_lookup('log_next_idx')
-        logbuf_addr = self.ramdump.read_word(self.ramdump.addr_lookup('log_buf'))
+        first_idx_addr = self.ramdump.address_of('log_first_idx')
+        last_idx_addr = self.ramdump.address_of('log_next_idx')
+        logbuf_addr = self.ramdump.read_word(
+            self.ramdump.address_of('log_buf'))
         time_offset = self.ramdump.field_offset(self.struct_name, 'ts_nsec')
         len_offset = self.ramdump.field_offset(self.struct_name, 'len')
         text_len_offset = self.ramdump.field_offset(self.struct_name, 'text_len')
@@ -132,11 +133,8 @@ class DmesgLib(object):
             curr_idx = self.verify_log(curr_idx, logbuf_addr, last_idx)
 
     def extract_dmesg(self):
-        if re.search('3.7.\d', self.ramdump.version) is not None:
+        major, minor, patch = self.ramdump.kernel_version
+        if (major, minor) >= (3, 7):
             self.extract_dmesg_binary()
-        elif re.search('3\.10\.\d', self.ramdump.version) is not None:
-            self.extract_dmesg_binary()
-        elif re.search('3\.14\.\d', self.ramdump.version) is not None:
-            self.extract_dmesg_binary()
-        else:
-            self.extract_dmesg_flat()
+            return
+        self.extract_dmesg_flat()

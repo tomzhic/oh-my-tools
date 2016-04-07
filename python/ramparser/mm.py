@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -8,6 +8,8 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
+
+import bitops
 
 
 def page_buddy(ramdump, page):
@@ -32,7 +34,7 @@ def page_to_nid(page_flags):
 
 
 def page_zone(ramdump, page):
-    contig_page_data = ramdump.addr_lookup('contig_page_data')
+    contig_page_data = ramdump.address_of('contig_page_data')
     node_zones_offset = ramdump.field_offset(
         'struct pglist_data', 'node_zones')
     page_flags_offset = ramdump.field_offset('struct page', 'flags')
@@ -73,7 +75,7 @@ def hash32(val, bits):
 
 def page_slot(ramdump, page):
     hashed = hash32(page, 7)
-    htable = ramdump.addr_lookup('page_address_htable')
+    htable = ramdump.address_of('page_address_htable')
     htable_size = ramdump.sizeof('page_address_htable[0]')
     return htable + htable_size * hashed
 
@@ -88,7 +90,7 @@ def nr_to_section(ramdump, sec_num):
     sections_per_root = 4096 / memsection_struct_size
     sect_nr_to_root = sec_num / sections_per_root
     masked = sec_num & (sections_per_root - 1)
-    mem_section_addr = ramdump.addr_lookup('mem_section')
+    mem_section_addr = ramdump.address_of('mem_section')
     mem_section = ramdump.read_word(mem_section_addr)
     if mem_section is None:
         return None
@@ -127,25 +129,41 @@ def page_to_pfn_sparse(ramdump, page):
     # divide by struct page size for division fun
     return (page - addr) / sizeof_page
 
-# Yes, we are hard coding the vmemmap. This isn't very likely to change unless
-# the rest of the addresses start changing as well. When that happens, the
-# entire parser will probably be broken in many other ways so a better solution
-# can be derived then.
+
+def get_vmemmap(ramdump):
+    # See: include/asm-generic/pgtable-nopud.h,
+    # arch/arm64/include/asm/pgtable-hwdef.h,
+    # arch/arm64/include/asm/pgtable.h
+    nlevels = int(ramdump.get_config_val("CONFIG_ARM64_PGTABLE_LEVELS"))
+    if ramdump.is_config_defined("CONFIG_ARM64_64K_PAGES"):
+        page_shift = 16
+    else:
+        page_shift = 12
+    pgdir_shift = ((page_shift - 3) * nlevels) + 3
+    pud_shift = pgdir_shift
+    pud_size = 1 << pud_shift
+    va_bits = int(ramdump.get_config_val("CONFIG_ARM64_VA_BITS"))
+    spsize = ramdump.sizeof('struct page')
+    vmemmap_size = bitops.align((1 << (va_bits - page_shift)) * spsize,
+                                pud_size)
+    vmalloc_end = ramdump.page_offset - pud_size - vmemmap_size
+    return vmalloc_end
+
+
 def page_to_pfn_vmemmap(ramdump, page):
-    mem_map = 0xffffffbc00000000
+    vmemmap = get_vmemmap(ramdump)
     page_size = ramdump.sizeof('struct page')
-    return ((page - mem_map) / page_size)
+    return ((page - vmemmap) / page_size)
 
 
 def pfn_to_page_vmemmap(ramdump, pfn):
-    mem_map = 0xffffffbc00000000
+    vmemmap = get_vmemmap(ramdump)
     page_size = ramdump.sizeof('struct page')
-    pfn_offset = ramdump.phys_offset >> 12
-    return mem_map + (pfn * page_size)
+    return vmemmap + (pfn * page_size)
 
 
 def page_to_pfn_flat(ramdump, page):
-    mem_map_addr = ramdump.addr_lookup('mem_map')
+    mem_map_addr = ramdump.address_of('mem_map')
     mem_map = ramdump.read_word(mem_map_addr)
     page_size = ramdump.sizeof('struct page')
     # XXX Needs to change for LPAE
@@ -154,7 +172,7 @@ def page_to_pfn_flat(ramdump, page):
 
 
 def pfn_to_page_flat(ramdump, pfn):
-    mem_map_addr = ramdump.addr_lookup('mem_map')
+    mem_map_addr = ramdump.address_of('mem_map')
     mem_map = ramdump.read_word(mem_map_addr)
     page_size = ramdump.sizeof('struct page')
     # XXX Needs to change for LPAE
@@ -181,8 +199,8 @@ def pfn_to_page(ramdump, pfn):
 
 
 def sparsemem_lowmem_page_address(ramdump, page):
-    membank1_start = ramdump.read_word(ramdump.addr_lookup('membank1_start'))
-    membank0_size = ramdump.read_word(ramdump.addr_lookup('membank0_size'))
+    membank1_start = ramdump.read_word(ramdump.address_of('membank1_start'))
+    membank0_size = ramdump.read_word(ramdump.address_of('membank0_size'))
     # XXX currently magic
     membank0_phys_offset = ramdump.phys_offset
     membank0_page_offset = ramdump.page_offset
@@ -197,12 +215,12 @@ def sparsemem_lowmem_page_address(ramdump, page):
 
 def dont_map_hole_lowmem_page_address(ramdump, page):
     phys = page_to_pfn(ramdump, page) << 12
-    hole_end_addr = ramdump.addr_lookup('memory_hole_end')
+    hole_end_addr = ramdump.address_of('memory_hole_end')
     if hole_end_addr is None:
-        hole_end_addr = ramdump.addr_lookup('membank1_start')
-    hole_offset_addr = ramdump.addr_lookup('memory_hole_offset')
+        hole_end_addr = ramdump.address_of('membank1_start')
+    hole_offset_addr = ramdump.address_of('memory_hole_offset')
     if hole_offset_addr is None:
-        hole_offset_addr = ramdump.addr_lookup('membank0_size')
+        hole_offset_addr = ramdump.address_of('membank0_size')
     hole_end = ramdump.read_word(hole_end_addr)
     hole_offset = ramdump.read_word(hole_offset_addr)
     if hole_end != 0 and phys >= hole_end:

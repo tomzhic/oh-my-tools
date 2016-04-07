@@ -139,6 +139,7 @@ class RunQueues(RamParser):
             array_wsize = 4
             idx_size = 32
 
+        seen_nodes = set()
         for i in range(0, bitmap_range):
             bitmap = self.ramdump.read_word(array_addr + i * array_wsize)
             while True:
@@ -149,6 +150,9 @@ class RunQueues(RamParser):
                     queue_addr = self.ramdump.read_word(
                         array_addr + queue_offset + idx)
                     while queue_addr != array_addr + queue_offset + idx:
+                        if queue_addr in seen_nodes:
+                            break
+                        seen_nodes.add(queue_addr)
                         task_addr = queue_addr - rt_offset
                         self.print_task_state('pend', task_addr)
                         queue_addr = self.ramdump.read_word(queue_addr)
@@ -156,8 +160,8 @@ class RunQueues(RamParser):
                     break
 
     def print_latest_callstack_maybe(self, task_addr):
-        text_start_addr = self.ramdump.addr_lookup('_text')
-        text_end_addr = self.ramdump.addr_lookup('_etext')
+        text_start_addr = self.ramdump.address_of('_text')
+        text_end_addr = self.ramdump.address_of('_etext')
         stack_offset = self.ramdump.field_offset('struct task_struct', 'stack')
 
         stack_addr = self.ramdump.read_word(task_addr + stack_offset)
@@ -180,7 +184,7 @@ class RunQueues(RamParser):
     def parse(self):
         print_out_str(
             '======================= RUNQUEUE STATE ============================')
-        runqueues_addr = self.ramdump.addr_lookup('runqueues')
+        runqueues_addr = self.ramdump.address_of('runqueues')
         nr_running_offset = self.ramdump.field_offset(
             'struct rq', 'nr_running')
         curr_offset = self.ramdump.field_offset('struct rq', 'curr')

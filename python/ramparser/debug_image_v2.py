@@ -15,17 +15,22 @@ import re
 import shutil
 import os
 import platform
+import random
 import subprocess
+import sys
+import time
 
+from dcc import DccRegDump, DccSramDump
 from pmic import PmicRegDump
 from print_out import print_out_str, print_out_exception
 from qdss import QDSSDump
 from watchdog_v2 import TZRegDump_v2
 from cachedumplib import lookup_cache_type
-
+from vsens import VsensData
 
 MEMDUMPV2_MAGIC = 0x42445953
 MAX_NUM_ENTRIES = 0x130
+TRACE_EVENT_FL_TRACEPOINT = 0x40
 
 class client(object):
     MSM_DUMP_DATA_CPU_CTX = 0x00
@@ -37,6 +42,8 @@ class client(object):
     MSM_DUMP_DATA_L2_CACHE = 0xC0
     MSM_DUMP_DATA_L3_CACHE = 0xD0
     MSM_DUMP_DATA_OCMEM = 0xE0
+    MSM_DUMP_DATA_DBGUI_REG = 0xE5
+    MSM_DUMP_DATA_VSENSE = 0xE9
     MSM_DUMP_DATA_TMC_ETF = 0xF0
     MSM_DUMP_DATA_TMC_REG = 0x100
     MSM_DUMP_DATA_TMC_ETF_REG = 0x101
@@ -54,7 +61,11 @@ client_table = {
     'MSM_DUMP_DATA_L2_CACHE': 'parse_cache_common',
     'MSM_DUMP_DATA_L3_CACHE': 'parse_l3_cache',
     'MSM_DUMP_DATA_OCMEM': 'parse_ocmem',
+    'MSM_DUMP_DATA_DBGUI_REG' : 'parse_qdss_common',
+    'MSM_DUMP_DATA_VSENSE': 'parse_vsens',
     'MSM_DUMP_DATA_PMIC': 'parse_pmic',
+    'MSM_DUMP_DATA_DCC_REG':'parse_dcc_reg',
+    'MSM_DUMP_DATA_DCC_SRAM':'parse_dcc_sram',
     'MSM_DUMP_DATA_TMC_ETF': 'parse_qdss_common',
     'MSM_DUMP_DATA_TMC_REG': 'parse_qdss_common',
     'MSM_DUMP_DATA_L2_TLB': 'parse_l2_tlb',
@@ -63,6 +74,7 @@ client_table = {
 qdss_tag_to_field_name = {
     'MSM_DUMP_DATA_TMC_REG': 'tmc_etr_start',
     'MSM_DUMP_DATA_TMC_ETF': 'etf_start',
+    'MSM_DUMP_DATA_DBGUI_REG': 'dbgui_start',
 }
 
 class DebugImage_v2():
@@ -99,6 +111,45 @@ class DebugImage_v2():
 
         regs.dump_all_regs(ram_dump)
 
+    def parse_dcc_reg(self, version, start, end, client_id, ram_dump):
+        client_name = self.dump_data_id_lookup_table[client_id]
+
+        print_out_str(
+            'Parsing {0} context start {1:x} end {2:x}'.format(client_name, start, end))
+
+        regs = DccRegDump(start, end)
+        if regs.parse_all_regs(ram_dump) is False:
+            print_out_str('!!! Could not get registers from DCC register dump')
+            return
+
+        regs.dump_all_regs(ram_dump)
+        return
+
+    def parse_dcc_sram(self, version, start, end, client_id, ram_dump):
+        client_name = self.dump_data_id_lookup_table[client_id]
+
+        print_out_str(
+            'Parsing {0} context start {1:x} end {2:x}'.format(client_name, start, end))
+
+        regs = DccSramDump(start, end)
+        if regs.dump_sram_img(ram_dump) is False:
+            print_out_str('!!! Could not dump SRAM')
+        else:
+            ram_dump.dcc = True
+        return
+
+    def parse_vsens(self, version, start, end, client_id, ram_dump):
+        client_name = self.dump_data_id_lookup_table[client_id]
+
+        print_out_str(
+            'Parsing {0} context start {1:x} end {2:x}'.format(client_name, start, end))
+
+        regs = VsensData()
+        if regs.init_dump_regs(start, end, ram_dump) is False:
+            print_out_str('!!! Could not get registers from Vsens Dump')
+            return
+        regs.print_vsens_regs(ram_dump)
+
     def parse_qdss_common(self, version, start, end, client_id, ram_dump):
         client_name = self.dump_data_id_lookup_table[client_id]
 
@@ -118,8 +169,11 @@ class DebugImage_v2():
         cache_type = lookup_cache_type(ramdump.hw_id, client_id, version)
         try:
             cache_type.parse(start, end, ramdump, outfile)
+        except NotImplementedError:
+            print_out_str('Cache dumping not supported for %s on this target'
+                          % client_name)
         except:
-            print_out_str('!!! Exception while running {0}'.format(client_name))
+            print_out_str('!!! Unhandled exception while running {0}'.format(client_name))
             print_out_exception()
         outfile.close()
 
@@ -147,16 +201,26 @@ class DebugImage_v2():
             self.formats_out.write("\tfield:{0} {1};\toffset:{2};\tsize:{3};\tsigned:{4};\n".format(type_str, field_name, offset, size, signed))
 
     def ftrace_events_func(self, ftrace_list, ram_dump):
-        name_offset = ram_dump.field_offset('struct ftrace_event_call', 'name')
         event_offset = ram_dump.field_offset('struct ftrace_event_call', 'event')
         fmt_offset = ram_dump.field_offset('struct ftrace_event_call', 'print_fmt')
         class_offset = ram_dump.field_offset('struct ftrace_event_call', 'class')
+        flags_offset = ram_dump.field_offset('struct ftrace_event_call', 'flags')
+        flags = ram_dump.read_word(ftrace_list + flags_offset)
+
+        if (ram_dump.kernel_version >= (3, 18) and (flags & TRACE_EVENT_FL_TRACEPOINT)):
+            tp_offset = ram_dump.field_offset('struct ftrace_event_call', 'tp')
+            tp_name_offset = ram_dump.field_offset('struct tracepoint', 'name')
+            tp = ram_dump.read_word(ftrace_list + tp_offset)
+            name = ram_dump.read_word(tp + tp_name_offset)
+        else:
+            name_offset = ram_dump.field_offset('struct ftrace_event_call', 'name')
+            name = ram_dump.read_word(ftrace_list + name_offset)
+
         type_offset = ram_dump.field_offset('struct trace_event', 'type')
         fields_offset = ram_dump.field_offset('struct ftrace_event_class', 'fields')
-        common_field_list = ram_dump.addr_lookup('ftrace_common_fields')
+        common_field_list = ram_dump.address_of('ftrace_common_fields')
         field_next_offset = ram_dump.field_offset('struct ftrace_event_field', 'link')
 
-        name = ram_dump.read_word(ftrace_list + name_offset)
         name_str = ram_dump.read_cstring(name, 512)
         event_id = ram_dump.read_word(ftrace_list + event_offset + type_offset)
         fmt = ram_dump.read_word(ftrace_list + fmt_offset)
@@ -182,7 +246,7 @@ class DebugImage_v2():
         formats_out = ram_dump.open_file(formats)
         self.formats_out = formats_out
 
-        ftrace_events_list = ram_dump.addr_lookup('ftrace_events')
+        ftrace_events_list = ram_dump.address_of('ftrace_events')
         next_offset = ram_dump.field_offset('struct ftrace_event_call', 'list')
         list_walker = llist.ListWalker(ram_dump, ftrace_events_list, next_offset)
         list_walker.walk_prev(ftrace_events_list, self.ftrace_events_func, ram_dump)
@@ -229,14 +293,38 @@ class DebugImage_v2():
         else:
             return
 
-        port = 12345
+        port = None
+        server_proc = None
+        qtf_success = False
+        max_tries = 3
         qtf_dir = os.path.join(out_dir, 'qtf')
         workspace = os.path.join(qtf_dir, 'qtf.workspace')
         qtf_out = os.path.join(out_dir, 'qtf.txt')
         chipset = 'msm' + str(ram_dump.hw_id)
         hlos = 'LA'
 
-        p = subprocess.Popen([qtf_path, '-s', '{0}'.format(port)])
+        # Resolve any port collisions with other running qtf_server instances
+        for tries in range(max_tries):
+            port = random.randint(12000, 13000)
+            server_proc = subprocess.Popen(
+                [qtf_path, '-s', '{0}'.format(port)], stderr=subprocess.PIPE)
+            time.sleep(1)
+            server_proc.poll()
+            if server_proc.returncode == 1:
+                server_proc.terminate()
+                continue
+            else:
+                qtf_success = True
+                break
+        if not qtf_success:
+            server_proc.terminate()
+            print_out_str('!!! Could not open a QTF server instance with a '
+                          'unique port (last port tried: '
+                          '{0})'.format(str(port)))
+            print_out_str('!!! Please kill all currently running qtf_server '
+                          'processes and try again')
+            return
+
         subprocess.call('{0} -c {1} new workspace {2} {3} {4}'.format(qtf_path, port, qtf_dir, chipset, hlos))
 
         self.collect_ftrace_format(ram_dump)
@@ -244,8 +332,33 @@ class DebugImage_v2():
         subprocess.call('{0} -c {1} open workspace {2}'.format(qtf_path, port, workspace))
         subprocess.call('{0} -c {1} open bin {2}'.format(qtf_path, port, trace_file))
         subprocess.call('{0} -c {1} stream trace table {2}'.format(qtf_path, port, qtf_out))
+        subprocess.call('{0} -c {1} close'.format(qtf_path, port))
         subprocess.call('{0} -c {1} exit'.format(qtf_path, port))
-        p.communicate('quit')
+        server_proc.communicate('quit')
+
+    def parse_dcc(self, ram_dump):
+        out_dir = ram_dump.outdir
+
+        dcc_parser_path = os.path.join(os.path.dirname(__file__), '..', 'dcc_parser', 'dcc_parser.py')
+
+        if dcc_parser_path is None:
+            print_out_str("!!! Incorrect path for DCC specified.")
+            return
+
+        if not os.path.exists(dcc_parser_path):
+            print_out_str("!!! dcc_parser_path {0} does not exist! Check your settings!".format(dcc_parser_path))
+            return
+
+        if os.path.getsize(os.path.join(out_dir, 'sram.bin')) > 0:
+            sram_file = os.path.join(out_dir, 'sram.bin')
+        else:
+            return
+
+        p = subprocess.Popen([sys.executable, dcc_parser_path, '-s', sram_file, '--out-dir', out_dir],
+                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        print_out_str('--------')
+        print_out_str(p.communicate()[0])
 
     def parse_dump_v2(self, ram_dump):
         self.dump_type_lookup_table = ram_dump.gdbmi.get_enum_lookup_table(
@@ -313,7 +426,7 @@ class DebugImage_v2():
         dump_entry_size = ram_dump.sizeof('struct msm_dump_entry')
         dump_data_size = ram_dump.sizeof('struct msm_dump_data')
 
-        mem_dump_data = ram_dump.addr_lookup('memdump')
+        mem_dump_data = ram_dump.address_of('memdump')
 
         mem_dump_table = ram_dump.read_word(
             mem_dump_data + dump_table_ptr_offset)
@@ -415,3 +528,5 @@ class DebugImage_v2():
             self.qdss.dump_all(ram_dump)
             if ram_dump.qtf:
                 self.parse_qtf(ram_dump)
+            if ram_dump.dcc:
+                self.parse_dcc(ram_dump)

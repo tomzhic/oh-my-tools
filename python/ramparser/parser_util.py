@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -38,37 +38,40 @@ def cleanupString(unclean_str):
         return ''.join([c for c in unclean_str if c in string.printable])
 
 def register_parser(longopt, desc, shortopt=None, optional=False):
-    """Decorator to register a parser class (a class that inherits from
-    RamParser) with the parsing framework. By using this decorator
-    your parser will automatically be hooked up to the command-line
-    parsing code.
+    """Decorator for registering a parser class.
+
+    The class being decorated should inherit from the ``RamParser``
+    class. By using this decorator your parser will automatically be hooked
+    up to the command-line parsing code.
 
     This makes it very easy and clean to add a new parser:
 
-      o Drop a new file in parsers that defines a class that inherits
-        from RamParser
-
-      o Decorate your class with @register_parser
-
-      o Define a `parse' method for your class
+      1. Drop a new file in the ``parsers/`` directory that defines a
+         class that inherits from ``RamParser``
+      2. Decorate your class with ``@register_parser``
+      3. Define a ``parse`` method for your class
 
     All of the command line argument handling and invoking the parse
     method of your parser will then be handled automatically.
 
-    Required arguments:
+    Example::
 
-    - longopt:: The longopt command line switch for this parser
+       # file: parsers/my_banner.py
+       @register_parser('--banner', 'Print the kernel banner')
+       class BannerParser(RamParser):
 
-    - desc:: A short description of the parser (also shown in the
-      help-text associated with the longopt)
+           def parse(self):
+               print self.ramdump.read_cstring('linux_banner', 256, False)
 
-    Optional arguments:
-
-    - shortopt:: The shortopt command line switch for this parser
-
-    - optional:: Indicates the parser is optional and should not be run with
-      --everything
-
+    :param longopt: The longopt command line switch for this parser
+    :param desc: A short description of the parser (also shown in the
+        help-text associated with the longopt)
+    :param shortopt: The shortopt command line switch for this parser.
+        This should only be used for maintaining backwards compatibility
+        with legacy parsers.  Otherwise shortopts are reserved for core
+        parser options.
+    :param optional: Indicates the parser is optional and should not be run
+        with ``--everything``
     """
     def wrapper(cls):
         if cls in [p.cls for p in _parsers]:
@@ -79,11 +82,11 @@ def register_parser(longopt, desc, shortopt=None, optional=False):
 
 
 def get_parsers():
-    """Imports everyone under the `parsers' directory. It is expected that
+    """Imports everyone under the ``parsers`` directory. It is expected that
     the parsers under the parsers directory will be a collection of
     classes that subclass RamParser and use the register_parser
     decorator to register themselves with the parser
-    framework. Therefore, importing all the modules under `parsers'
+    framework. Therefore, importing all the modules under ``parsers``
     should have the side-effect of populating the (internal to
     parser_util) _parsers list with the discovered parsers.
 
@@ -111,7 +114,7 @@ def get_parsers():
 class RamParser(object):
 
     """Base class for implementing ramdump parsers. New parsers should inherit
-    from this class and define a `parse' method.
+    from this class and define a ``parse`` method.
 
     Interesting properties that will be set for usage in derived
     classes:
@@ -180,7 +183,7 @@ def _xxd_line(addr, data):
     )
 
 def xxd(address, data, file_object=None):
-    """Dumps data to `file_object' or stdout, in the format of `xxd'. data
+    """Dumps data to ``file_object`` or stdout, in the format of ``xxd``. data
     should be a list of integers.
 
     >>> xxd(0x1000, [0xde, 0xad, 0xbe, 0xef, 112, 105, 122, 122, 97, 0, 0, 42, 43, 44, 45, 90])

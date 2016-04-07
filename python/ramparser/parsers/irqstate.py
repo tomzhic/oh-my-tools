@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -19,11 +19,11 @@ class IrqParse(RamParser):
     def print_irq_state_3_0(self, ram_dump):
         print_out_str(
             '=========================== IRQ STATE ===============================')
-        per_cpu_offset_addr = ram_dump.addr_lookup('__per_cpu_offset')
-        cpu_present_bits_addr = ram_dump.addr_lookup('cpu_present_bits')
+        per_cpu_offset_addr = ram_dump.address_of('__per_cpu_offset')
+        cpu_present_bits_addr = ram_dump.address_of('cpu_present_bits')
         cpu_present_bits = ram_dump.read_word(cpu_present_bits_addr)
         cpus = bin(cpu_present_bits).count('1')
-        irq_desc = ram_dump.addr_lookup('irq_desc')
+        irq_desc = ram_dump.address_of('irq_desc')
         foo, irq_desc_size = ram_dump.unwind_lookup(irq_desc, 1)
         h_irq_offset = ram_dump.field_offset('struct irq_desc', 'handle_irq')
         irq_num_offset = ram_dump.field_offset('struct irq_data', 'irq')
@@ -74,14 +74,19 @@ class IrqParse(RamParser):
 
     def radix_tree_lookup_element(self, ram_dump, root_addr, index):
         rnode_offset = ram_dump.field_offset('struct radix_tree_root', 'rnode')
-        rnode_height_offset = ram_dump.field_offset(
-            'struct radix_tree_node', 'height')
+        if (ram_dump.kernel_version[0], ram_dump.kernel_version[1]) >= (3, 18):
+            rnode_height_offset = ram_dump.field_offset(
+                'struct radix_tree_node', 'path')
+        else:
+            rnode_height_offset = ram_dump.field_offset(
+                'struct radix_tree_node', 'height')
         slots_offset = ram_dump.field_offset('struct radix_tree_node', 'slots')
         pointer_size = ram_dump.sizeof('struct radix_tree_node *')
 
         # if CONFIG_BASE_SMALL=0: radix_tree_map_shift = 6
         radix_tree_map_shift = 6
         radix_tree_map_mask = 0x3f
+        radix_tree_height_mask = 0xfff
         height_to_maxindex = [0x0, 0x3F, 0x0FFF,
                               0x0003FFFF, 0x00FFFFFF, 0x3FFFFFFF, 0xFFFFFFFF]
 
@@ -92,6 +97,9 @@ class IrqParse(RamParser):
 
         node_addr = ram_dump.read_word(root_addr + rnode_offset) & 0xfffffffffffffffe
         height = ram_dump.read_int(node_addr + rnode_height_offset)
+
+        if (ram_dump.kernel_version[0], ram_dump.kernel_version[1]) >= (3, 18):
+            height = height & radix_tree_height_mask
 
         if height > len(height_to_maxindex):
             return None
@@ -122,8 +130,8 @@ class IrqParse(RamParser):
         chip_name_offset = ram_dump.field_offset('struct irq_chip', 'name')
         cpu_str = ''
 
-        irq_desc_tree = ram_dump.addr_lookup('irq_desc_tree')
-        nr_irqs = ram_dump.read_int(ram_dump.addr_lookup('nr_irqs'))
+        irq_desc_tree = ram_dump.address_of('irq_desc_tree')
+        nr_irqs = ram_dump.read_int(ram_dump.address_of('nr_irqs'))
 
         for i in ram_dump.iter_cpus():
             cpu_str = cpu_str + '{0:10} '.format('CPU{0}'.format(i))
@@ -139,8 +147,8 @@ class IrqParse(RamParser):
                 ram_dump, irq_desc_tree, i)
             if irq_desc is None:
                 continue
-            irqnum = ram_dump.read_word(irq_desc + irq_num_offset)
-            irqcount = ram_dump.read_word(irq_desc + irq_count_offset)
+            irqnum = ram_dump.read_int(irq_desc + irq_data_offset + irq_num_offset)
+            irqcount = ram_dump.read_int(irq_desc + irq_count_offset)
             action = ram_dump.read_word(irq_desc + irq_action_offset)
             kstat_irqs_addr = ram_dump.read_word(irq_desc + kstat_irqs_offset)
             irq_stats_str = ''
@@ -165,7 +173,7 @@ class IrqParse(RamParser):
                     '{0:4} {1} {2:30} {3:15} v.v (struct irq_desc *)0x{4:<20x}'.format(irqnum, irq_stats_str, name, chip_name, irq_desc))
 
     def parse(self):
-        irq_desc = self.ramdump.addr_lookup('irq_desc')
+        irq_desc = self.ramdump.address_of('irq_desc')
         if self.ramdump.is_config_defined('CONFIG_SPARSE_IRQ'):
             self.print_irq_state_sparse_irq(self.ramdump)
 

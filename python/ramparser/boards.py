@@ -20,8 +20,6 @@ class Board(object):
     phys_offset = physical offset of the board (CONFIG_PHYS_OFFSET)
     wdog_addr = absolute physical address to check for FIQs
     imem_file_name = file name corresponding to imem_start
-    trace_soc = Turn on additional debugging information for socinfo detection
-                (useful when adding a new board and you want to verify values)
 
     It is not recommended to create instances of this class directly.
     Instead, classes should derive from this class and set fiels appropriately
@@ -38,18 +36,17 @@ class Board(object):
          self.phys_offset = 0
          self.wdog_addr = 0
          self.imem_file_name = None
-         self.trace_soc = False
 
 class Board8960(Board):
-    def __init__(self, socid, board_num):
+    def __init__(self, socid, board_num, phys_offset=0x80200000, ram_start=0x80000000):
         super(Board8960, self).__init__()
         self.socid = socid
         self.board_num = board_num
         self.cpu = 'KRAIT'
-        self.ram_start = 0x80000000
+        self.ram_start = ram_start
         self.imem_start = 0x2a03f000
         self.smem_addr = 0x0
-        self.phys_offset = 0x80200000
+        self.phys_offset = phys_offset
         self.wdog_addr = 0x2a03f658
         self.imem_file_name = 'IMEM_C.BIN'
 
@@ -258,6 +255,84 @@ class Board8992(Board):
         self.wdog_addr = 0xfe87f658
         self.imem_file_name = 'OCIMEM.BIN'
 
+class Board8929(Board):
+    def __init__(self, socid, smem_addr):
+        super(Board8929, self).__init__()
+        self.socid = socid
+        self.board_num = 8929
+        self.cpu = 'CORTEXA7'
+        self.ram_start = 0x80000000
+        self.smem_addr = smem_addr
+        self.phys_offset = 0x80000000
+        self.imem_start = 0x8600000
+        self.wdog_addr = 0x8600658
+
+class Board8996(Board):
+    def __init__(self, socid):
+        super(Board8996, self).__init__()
+        self.socid = socid
+        self.board_num = 8996
+        self.cpu = 'HYDRA'
+        self.ram_start = 0x80000000
+        self.smem_addr = 0x6000000
+        self.phys_offset = 0x80000000
+        self.imem_start = 0x6680000
+        self.wdog_addr = 0x66BF658
+        self.imem_file_name = 'OCIMEM.BIN'
+
+class Board8952(Board):
+    def __init__(self, socid):
+        super(Board8952, self).__init__()
+        self.socid = socid
+        self.board_num = 8952
+        self.cpu = 'CORTEXA53'
+        self.ram_start = 0x80000000
+        self.smem_addr = 0x6300000
+        self.phys_offset = 0x80000000
+        self.imem_start = 0x8600000
+        self.wdog_addr = 0x8600658
+        self.imem_file_name = 'OCIMEM.BIN'
+
+class Board8976(Board):
+    def __init__(self, socid):
+        super(Board8976, self).__init__()
+        self.socid = socid
+        self.board_num = 8976
+        self.cpu = 'CORTEXA53'
+        self.ram_start = 0x80000000
+        self.smem_addr = 0x6300000
+        self.phys_offset = 0x20000000
+        self.imem_start = 0x8600000
+        self.wdog_addr = 0x8600658
+        self.imem_file_name = 'OCIMEM.BIN'
+
+class Board9607(Board):
+    def __init__(self, socid):
+        super(Board9607, self).__init__()
+        self.socid = socid
+        self.board_num = 9607
+        self.cpu = 'CORTEXA7'
+        self.ram_start = 0x80000000
+        self.smem_addr = 0x7d00000
+        self.phys_offset = 0x80000000
+        self.imem_start = 0x8600000
+        self.wdog_addr = 0x8600658
+        self.imem_file_name = 'OCIMEM.BIN'
+
+
+class Board8937(Board):
+    def __init__(self, socid):
+        super(Board8937, self).__init__()
+        self.socid = socid
+        self.board_num = 8937
+        self.cpu = 'CORTEXA53'
+        self.ram_start = 0x80000000
+        self.smem_addr = 0x6300000
+        self.phys_offset = 0x40000000
+        self.imem_start = 0x8600000
+        self.wdog_addr = 0x8600658
+        self.imem_file_name = 'OCIMEM.BIN'
+
 boards = []
 
 boards.append(Board9640(socid=234))
@@ -284,6 +359,11 @@ boards.append(Board8909(socid=258))
 boards.append(Board8909(socid=265))
 
 boards.append(Board8908(socid=259))
+
+boards.append(Board8929(socid=268, smem_addr=0xe200000))
+boards.append(Board8929(socid=269, smem_addr=0xe200000))
+boards.append(Board8929(socid=270, smem_addr=0xe200000))
+boards.append(Board8929(socid=271, smem_addr=0x6300000))
 
 boards.append(Board8974(socid=126))
 boards.append(Board8974(socid=184))
@@ -361,6 +441,7 @@ boards.append(Board8960(socid=122, board_num=8960))
 boards.append(Board8960(socid=123, board_num=8260))
 boards.append(Board8960(socid=124, board_num=8060))
 
+boards.append(Board8960(socid=244, board_num=8064, phys_offset=0x40200000, ram_start=0x40000000))
 boards.append(Board8960(socid=109, board_num=8064))
 boards.append(Board8960(socid=130, board_num=8064))
 boards.append(Board8960(socid=153, board_num=8064))
@@ -415,6 +496,25 @@ boards.append(Board8994(socid=207))
 
 boards.append(Board8992(socid=251))
 boards.append(Board8992(socid=252))
+
+boards.append(Board8996(socid=246))
+boards.append(Board8996(socid=291))
+
+boards.append(Board8952(socid=264))
+
+boards.append(Board8976(socid=266))
+boards.append(Board8976(socid=274))
+boards.append(Board8976(socid=277))
+boards.append(Board8976(socid=278))
+
+boards.append(Board9607(socid=290))
+boards.append(Board9607(socid=296))
+boards.append(Board9607(socid=297))
+boards.append(Board9607(socid=298))
+boards.append(Board9607(socid=299))
+
+boards.append(Board8937(socid=294))
+boards.append(Board8937(socid=295))
 
 def get_supported_boards():
     """ Called by other part of the code to get a list of boards """

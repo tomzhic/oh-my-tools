@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-# Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 and
@@ -120,7 +120,9 @@ if __name__ == '__main__':
     parser.add_option('', '--parse-qdss', action='store_true',
                       dest='qdss', help='Parse QDSS (deprecated)')
     parser.add_option('', '--64-bit', action='store_true', dest='arm64',
-                      help='Parse dumps as 64-bit dumps')
+                      help='Parse dumps as 64-bit dumps (default)')
+    parser.add_option('', '--32-bit', action='store_true', dest='arm32',
+                      help='Parse dumps as 32-bit dumps')
     parser.add_option('', '--shell', action='store_true',
                       help='Run an interactive python interpreter with the ramdump loaded')
     parser.add_option('', '--classic-shell', action='store_true',
@@ -129,6 +131,19 @@ if __name__ == '__main__':
                       help='Use QTF tool to parse and save QDSS trace data')
     parser.add_option('', '--qtf-path', dest='qtf_path',
                       help='QTF tool executable')
+    parser.add_option('', '--ipc-help', dest='ipc_help',
+                      help='Help for IPC Logging', action='store_true',
+                      default=False)
+    parser.add_option('', '--ipc-test', dest='ipc_test',
+                      help='List of test files for the IPC Logging test command (name1, name2, ..., nameN, <version>)',
+                      action='append', default=[])
+    parser.add_option('', '--ipc-skip', dest='ipc_skip', action='store_true',
+                      help='Skip IPC Logging when parsing everything',
+					  default=False)
+    parser.add_option('', '--ipc-debug', dest='ipc_debug', action='store_true',
+                      help='Debug Mode for IPC Logging', default=False)
+    parser.add_option('', '--eval',
+                      help='Evaluate some python code directly, or from stdin if "-" is passed. The "dump" variable will be available, as it is with the --shell option.')  # noqa
 
     for p in parser_util.get_parsers():
         parser.add_option(p.shortopt or '',
@@ -219,6 +234,12 @@ if __name__ == '__main__':
     nm_path = options.nm
     objdump_path = options.objdump
 
+    if options.arm64:
+        print_out_str('--64-bit is deprecated. Dumps are assumed to be 64-bit by default.')
+        print_out_str('For 32-bit dumps, use --32-bit.')
+    else:
+        options.arm64 = not options.arm32
+
     try:
         import local_settings
         try:
@@ -273,12 +294,15 @@ if __name__ == '__main__':
     if options.everything:
         options.qtf = True
 
-    dump = RamDump(options.vmlinux, nm_path, gdb_path, objdump_path, options.ram_addr,
-                   options.autodump, options.phys_offset, options.outdir, options.qtf_path,
-                   options.force_hardware, options.force_hardware_version,
-                   arm64=options.arm64,
-                   page_offset=options.page_offset, qtf=options.qtf,
-                   t32_host_system=options.t32_host_system)
+    dump = RamDump(options, nm_path, gdb_path, objdump_path)
+
+    if options.eval:
+        if options.eval == '-':
+            code = sys.stdin.read()
+        else:
+            code = options.eval
+        exec(code)
+        sys.exit(0)
 
     if options.shell or options.classic_shell:
         print("Entering interactive shell mode.")
