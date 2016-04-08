@@ -2,15 +2,15 @@
 
 if '%*'=='' call :help & exit /b
 if '%1'=='signoff' (
-	bcdedit.exe -set loadoptions DDISABLE_INTEGRITY_CHECKS
+	bcdedit /set loadoptions DDISABLE_INTEGRITY_CHECKS
 ) else if '%1'=='cp' (
-	rundll32.exe shell32.dll,Control_RunDLL
+	rundll32 shell32.dll,Control_RunDLL
 ) else if '%1'=='dm' (
-	rundll32.exe devmgr.dll DeviceManager_Execute
-) else if '%1'=='cp' (
-	rundll32.exe shell32.dll,Control_RunDLL
-) else if '%1'=='cp' (
-	rundll32.exe shell32.dll,Control_RunDLL
+	rundll32 devmgr.dll DeviceManager_Execute
+) else if '%1'=='tson' (
+	bcdedit /set testsigning on
+) else if '%1'=='tsoff' (
+	bcdedit /set testsigning off
 ) else if '%1'=='cp' (
 	rundll32.exe shell32.dll,Control_RunDLL
 ) else if '%1'=='cp' (
@@ -27,8 +27,8 @@ echo.
 echo winctl signoff : disable intergrity checks
 echo winctl cp      : Control Panel
 echo winctl dm      : Device Manager
-echo winctl signoff : disable intergrity checks
-echo winctl signoff : disable intergrity checks
+echo winctl tson    : testsigning on
+echo winctl tsoff   : testsigning off
 echo winctl signoff : disable intergrity checks
 echo winctl signoff : disable intergrity checks
 echo winctl signoff : disable intergrity checks

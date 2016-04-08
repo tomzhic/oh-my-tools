@@ -1,3 +1,3 @@
 @echo off  
 
-"%WINIXROOT%\7plus-Taskbar-Numberer\64\7+ Taskbar Numberer.exe" -hidetray -hidewnd -v3
+start %WINIXROOT%\7plus-Taskbar-Numberer\64\tbn.exe -hidetray -hidewnd -v3

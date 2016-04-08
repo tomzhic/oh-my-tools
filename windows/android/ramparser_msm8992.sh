@@ -3,7 +3,7 @@ source ~/.winixrc
 
 #ramparse_path=$(cd `dirname $(readlink $0)`; pwd)
 ramparse_path=/xbin/python/ramparser/
-ndk_path=/d/Android/ndk/android-ndk-r10e/
+ndk_path=/c/NDK/android-ndk-r10e/
 
 if [ ! -e vmlinux ]
 then
