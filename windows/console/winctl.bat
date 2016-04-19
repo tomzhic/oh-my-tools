@@ -2,7 +2,7 @@
 
 if '%*'=='' call :help & exit /b
 if '%1'=='signoff' (
-	bcdedit /set loadoptions DDISABLE_INTEGRITY_CHECKS
+	bcdedit /set loadoptions DISABLE_INTEGRITY_CHECKS
 ) else if '%1'=='cp' (
 	rundll32 shell32.dll,Control_RunDLL
 ) else if '%1'=='dm' (
