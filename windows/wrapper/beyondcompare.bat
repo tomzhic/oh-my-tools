@@ -1,3 +1,3 @@
 @echo off  
 
-start "" "C:\Program Files (x86)\Beyond Compare 4\Bcomp.exe" %*
+start "" "C:\Program Files\Beyond Compare 4\Bcomp.exe" %*

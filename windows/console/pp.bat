@@ -3,7 +3,7 @@
 ::set TERM_EXE=plink
 set TERM_EXE=putty
 
-for /f "delims=" %%i in (' lscom  ^| busybox grep ProlificSerial ^| busybox awk {"print $2"} ') do (set COM_NUMBER=%%i)
+for /f "delims=" %%i in (' lscom  ^| busybox grep USB-to-Serial ^| busybox awk {"print $1"} ') do (set COM_NUMBER=%%i)
 
 if '%*'=='' call :help & exit /b
 if '%1'=='com' (
