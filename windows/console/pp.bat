@@ -3,9 +3,10 @@
 rem set TERM_EXE=plink
 set TERM_EXE=putty
 
+for /f "delims=" %%i in (' lscom  ^| busybox grep ProlificSerial ^| busybox awk {"print $2"} ') do (set COM_NUMBER=%%i)
+
 if '%*'=='' call :help & exit /b
 if '%1'=='com' (
-	for /f "delims=" %%i in (' lscom  ^| busybox grep ProlificSerial ^| busybox awk {"print $2"} ') do (set COM_NUMBER=%%i)
 	echo Connect to %COM_NUMBER%
 	start %TERM_EXE% -serial %COM_NUMBER% -sercfg 115200,8,n,1
 ) else if '%1'=='adb' (
