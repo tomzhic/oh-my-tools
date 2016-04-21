@@ -1,7 +1,7 @@
 @echo off
 
-::set TERM_EXE=plink
-set TERM_EXE=putty
+set TERM_EXE=plink
+::set TERM_EXE=putty
 
 for /f "delims=" %%i in (' lscom  ^| busybox grep ProlificSerial ^| busybox awk {"print $2"} ') do (set COM_NUMBER=%%i)
 
@@ -18,5 +18,5 @@ exit /b
 :help
 echo This is a wrapper for putty/plink
 echo.
-echo pp com : Connect to COMX
-echo pp adb : Connect to ADB Server
+echo pl com : Connect to COMX
+echo pl adb : Connect to ADB Server
