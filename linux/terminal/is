@@ -1,4 +1,9 @@
 #!/bin/sh
 
 CURRENT_DIR=`pwd`
-echo $CURRENT_DIR > /tmp/.path_tag
+SERVER_IP=`echo $SSH_CONNECTION | awk '{print $1}'`
+CLIENT_IP=`echo $SSH_CONNECTION | awk '{print $3}'`
+
+echo klinec $SERVER_IP "$CURRENT_DIR $CLIENT_IP"
+klinec $SERVER_IP "$CURRENT_DIR $CLIENT_IP"
+
