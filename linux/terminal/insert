@@ -1,0 +1,4 @@
+#!/bin/sh
+
+CURRENT_DIR=`pwd`
+echo $CURRENT_DIR > /tmp/.path_tag
