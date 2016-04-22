@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-source ~/.winixrc
+if [ -f "$HOME/.winixrc" ]; then
+	source ~/.winixrc
+fi
 
 UBUNTU_IP=172.16.24.252
 ROUTER_IP=192.168.1.1
