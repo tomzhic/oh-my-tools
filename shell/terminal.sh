@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source ~/.winixrc
 
-UBUNTU_IP=192.168.1.14
+UBUNTU_IP=172.16.24.252
 ROUTER_IP=192.168.1.1
 
 echo "connect to $1"

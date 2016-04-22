@@ -26,5 +26,6 @@ if not "%NUMBER%"=="0" (
 	set /a NUMBER-=1
 	goto LOOP
 ) else (
-	echo Loop end
+	echo.
+	echo Mount Successfully
 )
