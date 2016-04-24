@@ -3,7 +3,7 @@ if [ -f "$HOME/.winixrc" ]; then
 	source ~/.winixrc
 fi
 
-UBUNTU_IP=172.16.24.252
+UBUNTU_IP=10.0.1.2
 ROUTER_IP=192.168.1.1
 
 echo "connect to $1"
