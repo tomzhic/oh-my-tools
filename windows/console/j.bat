@@ -20,5 +20,5 @@ for /f "delims=" %%i in (' net use ^| busybox grep %CLIENTIP% ^| busybox awk {"p
 for /f "delims=" %%i in (' busybox echo %MSG_CMD% ^| busybox awk {"print $3"} ') do (set TAG_PATH=%%i)
 ::busybox echo %TAG_PATH%
 
-cd /d %DRIVE%\%TAG_PATH%
 set OLDPWD=%cd%
+cd /d %DRIVE%\%TAG_PATH%
