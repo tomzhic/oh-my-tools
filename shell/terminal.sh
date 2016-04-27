@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 if [ -f "$HOME/.winixrc" ]; then
 	source ~/.winixrc
 fi
