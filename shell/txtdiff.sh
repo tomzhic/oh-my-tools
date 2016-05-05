@@ -38,6 +38,7 @@ else
   BASE_TWO=`basename $2`
 fi
 
+echo ""
 echo -e "\033[1;40;31m$BASE_ONE\033[0m"
 echo "-----------------------------------"
 grep --color -Fvxnf <(grep -Fxf $FILE_ONE $FILE_TWO) $FILE_ONE
