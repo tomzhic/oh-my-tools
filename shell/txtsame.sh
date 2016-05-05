@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 #same
 #grep -wf f1.txt f2.txt 
