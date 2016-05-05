@@ -9,9 +9,9 @@
 #grep -wvf  f1.txt f2.txt
 #grep -wvf  f2.txt f1.txt 
 
-usage="Usage: txtdiff first.txt second.txt
+usage="Usage: cfgdiff first.txt second.txt
 
-txtdiff 1.0 by Kidd Lu."
+cfgdiff 1.0 by Kidd Lu."
 
 case $1 in
 -h)    exec echo "$usage";;
