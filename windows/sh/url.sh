@@ -19,4 +19,4 @@ else
 fi
 
 echo $URL_PATH
-explorer $URL_PATH
+cygstart $URL_PATH

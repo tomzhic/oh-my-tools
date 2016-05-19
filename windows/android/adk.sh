@@ -64,6 +64,8 @@ case "$1" in
 		adb shell am broadcast -a android.intent.action.MASTER_CLEAR;;
 	smartisan-active)
 		adb shell am start -n com.smartisanos.setupwizard/com.smartisanos.setupwizard.SetupWizardCompleteActivity;;
+	smartisan-launcher)
+		adb shell am start -n com.smartisanos.launcher/com.smartisanos.launcher.Launcher;;
 	meminfo)
 		adk_meminfo;;
 	root)
