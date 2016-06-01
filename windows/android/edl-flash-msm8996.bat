@@ -11,10 +11,10 @@ set ADB_EXE=adb.exe
 set BUSYBOX_EXE=busybox.exe
 set FHLOADER_EXE=fh_loader.exe
 set SAHARA_EXE=QSaharaServer.exe
+set EMMCDL_EXE=emmcdl.exe
 set LSCOM_EXE=lscom.exe
 
 set OLDPWD=%cd%
-pushd %TMP%
 
 %ADB_EXE% devices | %BUSYBOX_EXE% sed -n 2p | %BUSYBOX_EXE% grep device >nul
 if "%ERRORLEVEL%"=="0" (
@@ -40,8 +40,11 @@ if "%COM_NUMBER%"=="" (
 	)
 )
 
+%BUSYBOX_EXE% sleep 5
 %SAHARA_EXE% -p \\.\%COM_NUMBER% -s 13:%~dp0\qcom\prog_ufs_firehose_8996_ddr.elf
 %BUSYBOX_EXE% sleep 3
+
+pushd %TMP%
 
 %FHLOADER_EXE% --port=\\.\%COM_NUMBER% --sendxml=rawprogram_unsparse0.xml --search_path=%DIR_PATH% --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=UFS
 %FHLOADER_EXE% --port=\\.\%COM_NUMBER% --sendxml=patch0.xml --search_path=%DIR_PATH% --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=UFS
@@ -69,6 +72,7 @@ if "%COM_NUMBER%"=="" (
 
 rem REST
 %FHLOADER_EXE% --port=\\.\%COM_NUMBER% --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=UFS --setactivepartition=1 --reset
+popd
 goto END
 
 :NODEVICE
@@ -77,7 +81,6 @@ echo ######   No Device Found!!   ######
 echo ###################################
 echo.
 
-popd
 pause
 exit /b 1
 
@@ -87,5 +90,4 @@ echo ######  EDL Flash Done!!!  ########
 echo ###################################
 echo.
 
-popd
 pause
