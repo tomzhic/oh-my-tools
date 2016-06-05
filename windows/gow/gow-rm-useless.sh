@@ -39,6 +39,6 @@ if [ "$SYS" == "cygwin" ]; then
 		echo "rm -f $useless"
 		/usr/bin/rm -f $useless
 	done
-	echo "rm -f gow.vbs vim.exe bash.exe putty.exe nano.exe ncftp.exe"
+	echo "rm -f gow.vbs vim.exe bash.exe putty.exe nano.exe ncftp.exe curl.exe"
 	/usr/bin/rm -f gow.vbs vim.exe bash.exe putty.exe nano.exe ncftp.exe
 fi
