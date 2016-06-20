@@ -35,6 +35,13 @@ adk_root ()
 	done
 }
 
+adk_panic ()
+{
+	adb root
+	adb wait-for-device
+	adb shell "echo c > /proc/sysrq-trigger"
+}
+
 adk_listapk ()
 {
 	adb shell pm list packages -f > /tmp/tmplog.pid.$$
@@ -70,6 +77,8 @@ case "$1" in
 		adk_meminfo;;
 	root)
 		adk_root;;
+	panic)
+		adk_panic;;
 	listapk)
 		adk_listapk;;
 	focusedapk)
